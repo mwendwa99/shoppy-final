@@ -7,7 +7,9 @@ const Stack = createStackNavigator();
 
 export default function () {
     return (
-        <Stack.Navigator headerMode="none">
+        <Stack.Navigator screenOptions={{
+            headerShown: false
+        }}>
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Signup" component={SignupScreen} />
         </Stack.Navigator>

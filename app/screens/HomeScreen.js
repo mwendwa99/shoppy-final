@@ -3,9 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import { IconButton } from '../components';
-import Firebase from '../config/firebase';
-import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserContext';
-import { async } from '@firebase/util';
+import Firebase from '../config/Firebase';
+import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 
 // firebase authentication service
 const auth = Firebase.auth();

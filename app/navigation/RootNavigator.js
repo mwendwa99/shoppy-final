@@ -1,6 +1,6 @@
 /* this file persists user login state through the application */
 import React, { useContext, useEffect, useState } from "react";
-import { NavigationContainer } from "react-navigation@/native";
+import { NavigationContainer } from '@react-navigation/native';
 import { View, ActivityIndicator } from 'react-native';
 
 import Firebase from '../config/Firebase';

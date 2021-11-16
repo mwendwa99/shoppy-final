@@ -5,9 +5,7 @@ import Routes from './app/navigation'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Routes />
-    </View>
+    <Routes />
   );
 }
 

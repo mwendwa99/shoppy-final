@@ -1,10 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Button as RNButton } from 'react-native';
+import { StyleSheet, Text, View, Image, Button as RNButton } from 'react-native';
 
 import { Button, InputField, ErrorMessage } from '../components';
 import Firebase from '../config/Firebase';
+import colors from '../config/colors';
+import ImageBackground from 'react-native/Libraries/Image/ImageBackground';
 
 const auth = Firebase.auth();
 
@@ -36,16 +38,22 @@ export default function LoginScreen({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
+        <ImageBackground
+            style={styles.background}
+            imageStyle={{ opacity: 0.5 }}
+            source={require('../../assets/background.jpg')}
+        >
             <StatusBar style='dark-content' />
-            <Text style={styles.title}>Login</Text>
+            <Image style={styles.logo} source={require('../../assets/logo.png')} />
+            <Text style={styles.title}>Shoppy</Text>
             <InputField
                 inputStyle={{
                     fontSize: 14
                 }}
                 containerStyle={{
-                    backgroundColor: '#fff',
-                    marginBottom: 20
+                    backgroundColor: colors.light,
+                    marginBottom: 20,
+                    borderRadius: 20,
                 }}
                 leftIcon='email'
                 placeholder='Enter email'
@@ -61,8 +69,9 @@ export default function LoginScreen({ navigation }) {
                     fontSize: 14
                 }}
                 containerStyle={{
-                    backgroundColor: '#fff',
-                    marginBottom: 20
+                    backgroundColor: colors.light,
+                    marginBottom: 20,
+                    borderRadius: 20,
                 }}
                 leftIcon='lock'
                 placeholder='Enter password'
@@ -78,34 +87,48 @@ export default function LoginScreen({ navigation }) {
             {loginError ? <ErrorMessage error={loginError} visible={true} /> : null}
             <Button
                 onPress={onLogin}
-                backgroundColor='#f57c00'
+                backgroundColor={colors.primary}
                 title='Login'
                 tileColor='#fff'
                 titleSize={20}
                 containerStyle={{
-                    marginBottom: 24
+                    marginBottom: 15,
+                    borderRadius: 20,
                 }}
             />
-            <RNButton
+            <Button
                 onPress={() => navigation.navigate('Signup')}
-                title='Go to Signup'
-                color='#000'
+                title='Signup'
+                titleSize={20}
+                backgroundColor={colors.secondary}
+                containerStyle={{
+                    marginBottom: 24,
+                    borderRadius: 20,
+                }}
             />
-        </View>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    background: {
         flex: 1,
-        backgroundColor: '#e93b81',
-        paddingTop: 50,
-        paddingHorizontal: 12
+        justifyContent: "flex-start",
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,9)',
+        paddingHorizontal: 20,
+    },
+    logo: {
+        width: 80,
+        height: 80,
+        alignSelf: 'center',
+        marginTop: 50,
+        marginBottom: 20,
     },
     title: {
-        fontSize: 24,
-        fontWeight: '600',
-        color: '#fff',
+        fontSize: 26,
+        fontWeight: '700',
+        color: colors.primary,
         alignSelf: 'center',
         paddingBottom: 24
     }

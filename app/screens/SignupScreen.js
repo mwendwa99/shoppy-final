@@ -1,9 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Button as RNButton } from 'react-native';
+import { StyleSheet, Text, Image } from 'react-native';
+import ImageBackground from 'react-native/Libraries/Image/ImageBackground';
 
 import { Button, InputField, ErrorMessage } from '../components';
+import colors from '../config/colors';
 import Firebase from '../config/Firebase';
 
 const auth = Firebase.auth();
@@ -36,16 +38,21 @@ export default function SignupScreen({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
+        <ImageBackground
+            imageStyle={{ opacity: 0.5 }}
+            source={require('../../assets/background.jpg')}
+            style={styles.background}>
             <StatusBar style='dark-content' />
+            <Image style={styles.logo} source={require('../../assets/logo.png')} />
             <Text style={styles.title}>Create new account</Text>
             <InputField
                 inputStyle={{
                     fontSize: 14
                 }}
                 containerStyle={{
-                    backgroundColor: '#fff',
-                    marginBottom: 20
+                    backgroundColor: colors.light,
+                    marginBottom: 20,
+                    borderRadius: 20,
                 }}
                 leftIcon='email'
                 placeholder='Enter email'
@@ -61,8 +68,9 @@ export default function SignupScreen({ navigation }) {
                     fontSize: 14
                 }}
                 containerStyle={{
-                    backgroundColor: '#fff',
-                    marginBottom: 20
+                    backgroundColor: colors.light,
+                    marginBottom: 20,
+                    borderRadius: 20,
                 }}
                 leftIcon='lock'
                 placeholder='Enter password'
@@ -78,34 +86,48 @@ export default function SignupScreen({ navigation }) {
             {signupError ? <ErrorMessage error={signupError} visible={true} /> : null}
             <Button
                 onPress={onHandleSignup}
-                backgroundColor='#f57c00'
                 title='Signup'
                 tileColor='#fff'
                 titleSize={20}
                 containerStyle={{
-                    marginBottom: 24
+                    marginBottom: 24,
+                    backgroundColor: colors.primary,
+                    borderRadius: 20,
                 }}
             />
-            <RNButton
+            <Button
                 onPress={() => navigation.navigate('Login')}
-                title='Go to Login'
-                color='#000'
+                title='Login'
+                tileColor='#fff'
+                titleSize={20}
+                containerStyle={{
+                    backgroundColor: colors.secondary,
+                    borderRadius: 20,
+                }}
             />
-        </View>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    background: {
         flex: 1,
-        backgroundColor: '#e93b81',
-        paddingTop: 50,
-        paddingHorizontal: 12
+        justifyContent: "flex-start",
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,9)',
+        paddingHorizontal: 20,
+    },
+    logo: {
+        width: 80,
+        height: 80,
+        alignSelf: 'center',
+        marginTop: 50,
+        marginBottom: 20,
     },
     title: {
-        fontSize: 24,
-        fontWeight: '600',
-        color: '#fff',
+        fontSize: 26,
+        fontWeight: '700',
+        color: colors.primary,
         alignSelf: 'center',
         paddingBottom: 24
     }

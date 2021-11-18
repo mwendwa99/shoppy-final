@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Image, Button as RNButton } from 'react-native';
+import { StyleSheet, Text, Image } from 'react-native';
 
 import { Button, InputField, ErrorMessage } from '../components';
 import Firebase from '../config/Firebase';
@@ -60,7 +60,7 @@ export default function LoginScreen({ navigation }) {
                 autoCapitalize='none'
                 keyboardType='email-address'
                 textContentType='emailAddress'
-                autoFocus={true}
+                autoFocus={false}
                 value={email}
                 onChangeText={text => setEmail(text)}
             />

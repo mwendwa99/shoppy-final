@@ -13,15 +13,6 @@ const auth = Firebase.auth();
 const HomeScreen = () => {
     const { user } = useContext(AuthenticatedUserContext);
 
-    // function to ha ndle user signout
-    const handleSignOut = async () => {
-        try {
-            await auth.signOut();
-        } catch (error) {
-            console.log(error)
-        }
-    };
-
     return (
         <View style={styles.container}>
             <StatusBar style='dark-content' />
@@ -31,7 +22,6 @@ const HomeScreen = () => {
                     name='logout'
                     size={24}
                     color={colors.danger}
-                    onPress={handleSignOut}
                 />
             </View>
             <Text style={styles.text}>Your UID is: {user.uid} </Text>

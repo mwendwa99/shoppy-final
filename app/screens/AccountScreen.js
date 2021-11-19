@@ -1,5 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
+
+import Firebase from '../config/Firebase'
+import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider'
 import Icon from '../components/Icon'
 import ListItem from '../components/ListItem'
 import ListItemSeparator from '../components/ListItemSeparator'
@@ -25,14 +28,27 @@ const menuItems = [
     },
 ]
 
+const auth = Firebase.auth()
+
 export default function AccountScreen({ navigation }) {
+    const { user } = useContext(AuthenticatedUserContext);
+
+    console.log('user object', user)
+
+    const handleLogout = async () => {
+        try {
+            await auth.signOut()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
-        // <Screen style={styles.screen}>
         <View style={styles.screen}>
             <View style={styles.container}>
                 <ListItem
-                    title="Brian Mwendwa"
-                    subTitle="brianmwendwa.mu@gmail.com"
+                    title={user.email}
+                    subTitle={user.email}
                     image={require('../../assets/user.jpg')}
                 />
             </View>
@@ -54,11 +70,12 @@ export default function AccountScreen({ navigation }) {
             </View>
             <ListItem
                 title="log Out"
+                onPress={handleLogout}
                 IconComponent={
-                    <Icon name="logout" backgroundColor={colors.danger} />
+                    <Icon
+                        name="logout" backgroundColor={colors.danger} />
                 } />
         </View>
-        // {/* </Screen> */ }
     )
 }
 

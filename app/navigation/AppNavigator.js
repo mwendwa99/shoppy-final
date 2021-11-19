@@ -20,21 +20,21 @@ export default function App() {
         <Tab.Navigator>
             <Tab.Screen
                 options={{
-                    tabBarIcon: ({ color, size }) => (
+                    tabBarIcon: ({ color }) => (
                         <MaterialCommunityIcons name="home" color={color} size={26} />
                     ),
                 }}
                 name="Home" component={HomeScreen} />
             <Tab.Screen
                 options={{
-                    tabBarIcon: ({ color, size }) => (
+                    tabBarIcon: ({ color }) => (
                         <MaterialCommunityIcons name="plus-box" color={color} size={26} />
                     ),
                 }}
                 name="Listing" component={SettingsScreen} />
             <Tab.Screen
                 options={{
-                    tabBarIcon: ({ color, size }) => (
+                    tabBarIcon: ({ color }) => (
                         <MaterialCommunityIcons name="account" color={color} size={26} />
                     ),
                 }}

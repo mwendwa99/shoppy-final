@@ -33,8 +33,6 @@ const auth = Firebase.auth()
 export default function AccountScreen({ navigation }) {
     const { user } = useContext(AuthenticatedUserContext);
 
-    console.log('user object', user)
-
     const handleLogout = async () => {
         try {
             await auth.signOut()

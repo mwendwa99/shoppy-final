@@ -4,6 +4,8 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { HomeScreen, AccountScreen } from '../screens';
+import styles from '../config/styles';
+import colors from '../config/colors';
 
 function SettingsScreen() {
     return (
@@ -17,7 +19,11 @@ const Tab = createMaterialBottomTabNavigator();
 
 export default function App() {
     return (
-        <Tab.Navigator>
+        <Tab.Navigator
+            barStyle={{ backgroundColor: colors.primary }}
+            activeColor={colors.white}
+            inactiveColor={colors.medium}
+        >
             <Tab.Screen
                 options={{
                     tabBarIcon: ({ color }) => (

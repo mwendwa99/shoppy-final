@@ -11,6 +11,7 @@ import Firebase from '../config/Firebase';
 const auth = Firebase.auth();
 
 export default function SignupScreen({ navigation }) {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordVisibility, setPasswordVisibility] = useState(true);
@@ -31,11 +32,16 @@ export default function SignupScreen({ navigation }) {
         try {
             if (email !== '' && password !== '') {
                 await auth.createUserWithEmailAndPassword(email, password);
+                // update name in firebase
+                await Firebase.auth().currentUser.updateProfile({
+                    displayName: name,
+                });
             }
         } catch (error) {
             setSignupError(error.message);
         }
     };
+
 
     return (
         <ImageBackground
@@ -45,6 +51,23 @@ export default function SignupScreen({ navigation }) {
             <StatusBar style='dark-content' />
             <Image style={styles.logo} source={require('../../assets/logo.png')} />
             <Text style={styles.title}>Create new account</Text>
+            <InputField
+                inputStyle={{
+                    fontSize: 14,
+                }}
+                containerStyle={{
+                    backgroundColor: colors.light,
+                    marginBottom: 20,
+                    borderRadius: 20,
+                }}
+                leftIcon='account'
+                placeholder='Enter username'
+                autoCapitalize='none'
+                keyboardType='default'
+                textContentType='name'
+                value={name}
+                onChangeText={text => setName(text)}
+            />
             <InputField
                 inputStyle={{
                     fontSize: 14
@@ -59,7 +82,6 @@ export default function SignupScreen({ navigation }) {
                 autoCapitalize='none'
                 keyboardType='email-address'
                 textContentType='emailAddress'
-                autoFocus={true}
                 value={email}
                 onChangeText={text => setEmail(text)}
             />

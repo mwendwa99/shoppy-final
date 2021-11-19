@@ -18,11 +18,6 @@ const HomeScreen = () => {
             <StatusBar style='dark-content' />
             <View style={styles.row}>
                 <Text style={styles.title}>{user.email}</Text>
-                <IconButton
-                    name='logout'
-                    size={24}
-                    color={colors.danger}
-                />
             </View>
             <Text style={styles.text}>Your UID is: {user.uid} </Text>
         </View>

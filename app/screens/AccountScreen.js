@@ -47,7 +47,7 @@ export default function AccountScreen({ navigation }) {
         <View style={styles.screen}>
             <View style={styles.container}>
                 <ListItem
-                    title={user.email}
+                    title={user.displayName}
                     subTitle={user.email}
                     image={require('../../assets/user.jpg')}
                 />

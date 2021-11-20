@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
 import { StyleSheet } from 'react-native';
 import * as Yup from 'yup';
 

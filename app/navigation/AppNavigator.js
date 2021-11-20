@@ -4,7 +4,6 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { HomeScreen, AccountScreen, ListingEditScreen } from '../screens';
-import styles from '../config/styles';
 import colors from '../config/colors';
 
 function SettingsScreen() {

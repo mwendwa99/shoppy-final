@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     padding: 15,
     width: "100%",
     marginVertical: 10,
-    elevation: 2
+    elevation: 1.5,
   },
   text: {
     color: colors.light,

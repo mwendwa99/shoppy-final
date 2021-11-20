@@ -7,32 +7,44 @@ import colors from "../config/colors";
 
 const listings = [
   {
+    id: 0,
+    title: "grey sweaters",
+    price: 1000,
+    image: require("../../assets/sweater.jpg"),
+  },
+  {
     id: 1,
-    title: "Red jacket for sale",
-    price: 100,
+    title: "black leather jacket for sale",
+    price: 1500,
     image: require("../../assets/jacket.jpg"),
   },
   {
     id: 2,
     title: "Couch in great condition",
-    price: 1000,
+    price: 40000,
     image: require("../../assets/couch.jpg"),
   },
   {
     id: 4,
-    title: "Red jacket for sale",
-    price: 100,
-    image: require("../../assets/jacket.jpg"),
+    title: "Nike sneakers for sale",
+    price: 5000,
+    image: require("../../assets/shoes.jpg"),
   },
   {
     id: 5,
-    title: "Couch in great condition",
-    price: 1000,
-    image: require("../../assets/couch.jpg"),
+    title: "Black office chair",
+    price: 3000,
+    image: require("../../assets/chair.jpg"),
+  },
+  {
+    id: 6,
+    title: "King Size bed",
+    price: 35000,
+    image: require("../../assets/bed.jpg"),
   },
 ];
 
-function ListingsScreen(props) {
+function ListingsScreen() {
   return (
     <Screen style={styles.screen}>
       <FlatList
@@ -43,7 +55,7 @@ function ListingsScreen(props) {
         renderItem={({ item }) => (
           <Card
             title={item.title}
-            subTitle={"$" + item.price}
+            subTitle={"Kes " + item.price}
             image={item.image}
           />
         )}

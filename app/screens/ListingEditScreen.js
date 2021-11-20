@@ -1,7 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { StyleSheet } from 'react-native';
 import * as Yup from 'yup';
+
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import { AppForm, AppFormField, SubmitButton, AppFormPicker } from '../components/forms';
@@ -11,8 +13,10 @@ import Screen from '../components/Screen';
 import useLocation from '../hooks/useLocation';
 import listingsApi from '../api/listings';
 import colors from '../config/colors';
-import { useFirebase } from '../hooks/useFirebase';
-import Firebase from '../config/firebase';
+import firebase from '../config/firebase';
+
+const db = getFirestore(firebase);
+const listings = query(collection(db, "listings"));
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
@@ -83,8 +87,13 @@ const categories = [
 function ListingEditScreen() {
     const location = useLocation();
     const { user } = useContext(AuthenticatedUserContext);
+    const [data, setData] = React.useState(null)
     // const db = useFirebase();
     // console.log('db', db)
+
+    useEffect(() => {
+        getCollection();
+    }, [])
 
     const handleSubmit = async (listing) => {
         const result = await listingsApi.addListing({ ...listing, location });
@@ -94,12 +103,14 @@ function ListingEditScreen() {
     }
 
     // get collection from firebase
-    // const getCollection = async () => {
-    //     const snapshot = await Firebase.firestore().collection('listings').get()
-    //     console.log('snapshot', snapshot)
-    // }
-
-    // getCollection();
+    const getCollection = async () => {
+        // console.log('q', q)
+        const querySnapshot = await getDocs(listings);
+        // map values to array  
+        const values = querySnapshot.docs.map(doc => doc.data());
+        setData(values);
+    }
+    console.log('data', data)
 
     return (
         <Screen style={styles.container}>

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 
-import Firebase from '../config/Firebase'
+import firebase from '../config/firebase'
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider'
 import Icon from '../components/Icon'
 import ListItem from '../components/ListItem'
@@ -28,7 +28,7 @@ const menuItems = [
     },
 ]
 
-const auth = Firebase.auth()
+const auth = firebase.auth()
 
 export default function AccountScreen({ navigation }) {
     const { user } = useContext(AuthenticatedUserContext);

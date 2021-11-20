@@ -6,7 +6,7 @@ import colors from "../config/colors";
 
 function Card({ title, subTitle, image }) {
   return (
-    <View style={styles.card}>
+    <View elevation={1.5} style={styles.card}>
       <Image style={styles.image} source={image} />
       <View style={styles.detailsContainer}>
         <AppText style={styles.title}>{title}</AppText>

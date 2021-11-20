@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { HomeScreen, AccountScreen } from '../screens';
+import { HomeScreen, AccountScreen, ListingEditScreen } from '../screens';
 import styles from '../config/styles';
 import colors from '../config/colors';
 
@@ -37,7 +37,7 @@ export default function App() {
                         <MaterialCommunityIcons name="plus-box" color={color} size={26} />
                     ),
                 }}
-                name="Listing" component={SettingsScreen} />
+                name="Listing" component={ListingEditScreen} />
             <Tab.Screen
                 options={{
                     tabBarIcon: ({ color }) => (

@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
 import { StyleSheet } from 'react-native';
 import * as Yup from 'yup';
 
+import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import { AppForm, AppFormField, SubmitButton, AppFormPicker } from '../components/forms';
 import CategoryPickerItem from '../components/CategoryPickerItem';
 import FormImagePicker from '../components/forms/FormImagePicker';
@@ -9,6 +11,8 @@ import Screen from '../components/Screen';
 import useLocation from '../hooks/useLocation';
 import listingsApi from '../api/listings';
 import colors from '../config/colors';
+import { useFirebase } from '../hooks/useFirebase';
+import Firebase from '../config/firebase';
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
@@ -78,6 +82,9 @@ const categories = [
 
 function ListingEditScreen() {
     const location = useLocation();
+    const { user } = useContext(AuthenticatedUserContext);
+    // const db = useFirebase();
+    // console.log('db', db)
 
     const handleSubmit = async (listing) => {
         const result = await listingsApi.addListing({ ...listing, location });
@@ -86,10 +93,19 @@ function ListingEditScreen() {
         alert('Success!');
     }
 
+    // get collection from firebase
+    // const getCollection = async () => {
+    //     const snapshot = await Firebase.firestore().collection('listings').get()
+    //     console.log('snapshot', snapshot)
+    // }
+
+    // getCollection();
+
     return (
         <Screen style={styles.container}>
             <AppForm
                 initialValues={{
+                    userId: user.uid,
                     title: "",
                     price: "",
                     description: "",

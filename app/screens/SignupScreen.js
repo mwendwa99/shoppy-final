@@ -6,9 +6,9 @@ import ImageBackground from 'react-native/Libraries/Image/ImageBackground';
 
 import { Button, InputField, ErrorMessage } from '../components';
 import colors from '../config/colors';
-import Firebase from '../config/Firebase';
+import firebase from '../config/firebase';
 
-const auth = Firebase.auth();
+const auth = firebase.auth();
 
 export default function SignupScreen({ navigation }) {
     const [name, setName] = useState('');
@@ -33,7 +33,7 @@ export default function SignupScreen({ navigation }) {
             if (email !== '' && password !== '') {
                 await auth.createUserWithEmailAndPassword(email, password);
                 // update name in firebase
-                await Firebase.auth().currentUser.updateProfile({
+                await firebase.auth().currentUser.updateProfile({
                     displayName: name,
                 });
             }

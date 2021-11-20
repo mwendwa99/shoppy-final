@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { StyleSheet, Text, Image } from 'react-native';
 
 import { Button, InputField, ErrorMessage } from '../components';
-import Firebase from '../config/Firebase';
+import firebase from '../config/firebase';
 import colors from '../config/colors';
 import ImageBackground from 'react-native/Libraries/Image/ImageBackground';
 
-const auth = Firebase.auth();
+const auth = firebase.auth();
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');

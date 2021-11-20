@@ -42,7 +42,7 @@ export default function AccountScreen({ navigation }) {
     }
 
     return (
-        <View style={styles.screen}>
+        <Screen style={styles.screen}>
             <View style={styles.container}>
                 <ListItem
                     title={user.displayName}
@@ -73,7 +73,7 @@ export default function AccountScreen({ navigation }) {
                     <Icon
                         name="logout" backgroundColor={colors.danger} />
                 } />
-        </View>
+        </Screen>
     )
 }
 

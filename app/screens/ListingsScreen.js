@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
+// import statement to get from firestore
+import { getFirestore, query, collection, getDocs } from 'firebase/firestore';
 
+import firebase from '../config/firebase';
 import Screen from "../components/Screen";
 import Card from "../components/Card";
 import colors from "../config/colors";
+
+const db = getFirestore(firebase);
+const dbListings = query(collection(db, "listings"));
 
 const listings = [
   {
@@ -45,6 +51,20 @@ const listings = [
 ];
 
 function ListingsScreen() {
+  const [data, setData] = useState([]);
+  // function to get data from firestore
+  const getData = async () => {
+    const data = await getDocs(dbListings);
+    const values = data.docs.map(doc => doc.data());
+    setData(values);
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  console.log('data', data)
+
   return (
     <Screen style={styles.screen}>
       <FlatList

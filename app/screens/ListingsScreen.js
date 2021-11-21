@@ -70,8 +70,8 @@ function ListingsScreen() {
       <FlatList
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        data={listings}
-        keyExtractor={(listing) => listing.id.toString()}
+        data={data}
+        keyExtractor={(data) => data.description}
         renderItem={({ item }) => (
           <Card
             title={item.title}

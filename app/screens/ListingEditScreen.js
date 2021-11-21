@@ -1,8 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import * as Yup from 'yup';
 
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, addDoc, serverTimestamp, collection } from "firebase/firestore";
+import firebase from '../config/firebase';
 
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import { AppForm, AppFormField, SubmitButton, AppFormPicker } from '../components/forms';
@@ -10,12 +11,9 @@ import CategoryPickerItem from '../components/CategoryPickerItem';
 import FormImagePicker from '../components/forms/FormImagePicker';
 import Screen from '../components/Screen';
 import useLocation from '../hooks/useLocation';
-import listingsApi from '../api/listings';
 import colors from '../config/colors';
-import firebase from '../config/firebase';
 
 const db = getFirestore(firebase);
-const listings = query(collection(db, "listings"));
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
@@ -86,30 +84,12 @@ const categories = [
 function ListingEditScreen() {
     const location = useLocation();
     const { user } = useContext(AuthenticatedUserContext);
-    const [data, setData] = React.useState(null)
-    // const db = useFirebase();
-    // console.log('db', db)
 
-    useEffect(() => {
-        getCollection();
-    }, [])
-
+    // post data to firebase/firestore
     const handleSubmit = async (listing) => {
-        const result = await listingsApi.addListing({ ...listing, location });
-        if (!result.ok)
-            return alert('unable to save the listing!');
-        alert('Success!');
-    }
-
-    // get collection from firebase
-    const getCollection = async () => {
-        // console.log('q', q)
-        const querySnapshot = await getDocs(listings);
-        // map values to array  
-        const values = querySnapshot.docs.map(doc => doc.data());
-        setData(values);
-    }
-    console.log('data', data)
+        await addDoc(collection(db, "listings"),
+            { ...listing, location, timestamp: serverTimestamp() });
+    };
 
     return (
         <Screen style={styles.container}>
@@ -122,8 +102,7 @@ function ListingEditScreen() {
                     category: null,
                     images: [],
                 }}
-                // onSubmit={handleSubmit}
-                onSubmit={(values) => console.log(values)}
+                onSubmit={(values) => handleSubmit(values)}
                 validationSchema={validationSchema}
             >
                 <FormImagePicker name="images" />

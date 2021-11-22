@@ -8,6 +8,7 @@ import ListItem from '../components/ListItem'
 import ListItemSeparator from '../components/ListItemSeparator'
 import Screen from '../components/Screen'
 import colors from '../config/colors'
+import { StatusBar } from 'expo-status-bar'
 
 const menuItems = [
     {
@@ -43,6 +44,7 @@ export default function AccountScreen({ navigation }) {
 
     return (
         <Screen style={styles.screen}>
+            <StatusBar style='dark-content' />
             <View style={styles.container}>
                 <ListItem
                     title={user.displayName}

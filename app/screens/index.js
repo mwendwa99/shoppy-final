@@ -1,10 +1,10 @@
 import LoginScreen from "./LoginScreen";
-import HomeScreen from './HomeScreen';
 import SignupScreen from "./SignupScreen";
 import AccountScreen from "./AccountScreen";
-import ListingEditScreen from './ListingEditScreen'
+import ListingEditScreen from './ListingEditScreen';
+import ListingsScreen from './ListingsScreen';
 
 export {
-    LoginScreen, HomeScreen, SignupScreen, AccountScreen,
-    ListingEditScreen
+    LoginScreen, SignupScreen, AccountScreen,
+    ListingEditScreen, ListingsScreen
 };

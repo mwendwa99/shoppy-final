@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, ScrollView, StyleSheet } from "react-native";
+import { StatusBar } from "expo-status-bar";
 // import statement to get from firestore
 import { getFirestore, query, collection, getDocs } from 'firebase/firestore';
 
@@ -59,10 +60,10 @@ function ListingsScreen() {
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = () => {
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
-  }, []);
+    getData();
+  };
 
   // function to get data from firestore
   const getData = async () => {
@@ -73,6 +74,7 @@ function ListingsScreen() {
       id: listing.id,
     }));
     setData(values);
+    setRefreshing(false);
   }
 
   useEffect(() => {
@@ -85,15 +87,21 @@ function ListingsScreen() {
     <Screen
       // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       style={styles.screen}>
+      <StatusBar style='dark-content' />
       {/* <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       > */}
       <FlatList
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        // refreshing={refreshing}
+        // onRefresh={() => onRefresh}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         data={data}
-        keyExtractor={(data) => data.id.toString()}
+        extraData={data}
+        // keyExtractor={(data) => data.id.toString()}
+        keyExtractor={(data, index) => index}
+        progressViewOffset={100}
         renderItem={({ item }) => (
           <Card
             title={item.title}

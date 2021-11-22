@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import * as Yup from 'yup';
+import { StatusBar } from 'expo-status-bar';
 
 import { getFirestore, addDoc, serverTimestamp, collection } from "firebase/firestore";
 import firebase from '../config/firebase';
@@ -106,6 +107,7 @@ function ListingEditScreen({ navigation }) {
 
     return (
         <Screen style={styles.container}>
+            <StatusBar style='dark-content' />
             <AppForm
                 initialValues={{
                     userId: user.uid,

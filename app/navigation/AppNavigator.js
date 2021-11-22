@@ -1,18 +1,9 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { HomeScreen, AccountScreen, ListingEditScreen } from '../screens';
+import { AccountScreen, ListingEditScreen, ListingsScreen } from '../screens';
 import colors from '../config/colors';
-
-function SettingsScreen() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Add Listings page</Text>
-        </View>
-    );
-}
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -29,7 +20,7 @@ export default function App() {
                         <MaterialCommunityIcons name="home" color={color} size={26} />
                     ),
                 }}
-                name="Home" component={HomeScreen} />
+                name="Home" component={ListingsScreen} />
             <Tab.Screen
                 options={{
                     tabBarIcon: ({ color }) => (

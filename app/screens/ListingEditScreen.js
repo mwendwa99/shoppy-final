@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ActivityIndicator } from 'react-native';
 import * as Yup from 'yup';
 import { StatusBar } from 'expo-status-bar';
 
@@ -86,16 +86,20 @@ function ListingEditScreen({ navigation }) {
     const location = useLocation();
     const { user } = useContext(AuthenticatedUserContext);
 
+    const [isLoading, setIsLoading] = React.useState(false);
+
     // post data to firebase/firestore
     const handleSubmit = async (listing) => {
+        setIsLoading(true);
         await addDoc(collection(db, "listings"),
             { ...listing, location, timestamp: serverTimestamp() }).
             then(() => {
                 console.log("success");
-                navigation.navigate("Home");
             }).catch(error => {
                 console.log(error);
             });
+        setIsLoading(false);
+        navigation.navigate("Home");
     };
 
     // post image to firebase
@@ -108,6 +112,7 @@ function ListingEditScreen({ navigation }) {
     return (
         <Screen style={styles.container}>
             <StatusBar style='dark-content' />
+            <ActivityIndicator size="small" animating={isLoading} color={colors.secondary} />
             <AppForm
                 initialValues={{
                     userId: user.uid,
@@ -147,7 +152,9 @@ function ListingEditScreen({ navigation }) {
                     numberOfLines={3}
                     placeholder="Description"
                 />
-                <SubmitButton title="Post" />
+                <SubmitButton title={
+                    isLoading ? "Posting..." : "Post"
+                } />
             </AppForm>
         </Screen>
     );

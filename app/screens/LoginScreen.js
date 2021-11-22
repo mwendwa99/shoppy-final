@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, Image } from 'react-native';
+import { StyleSheet, Text, Image, ActivityIndicator } from 'react-native';
 
 import { Button, InputField, ErrorMessage } from '../components';
 import firebase from '../config/firebase';
@@ -11,6 +11,7 @@ import ImageBackground from 'react-native/Libraries/Image/ImageBackground';
 const auth = firebase.auth();
 
 export default function LoginScreen({ navigation }) {
+    const [isloading, setIsloading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordVisibility, setPasswordVisibility] = useState(true);
@@ -28,6 +29,7 @@ export default function LoginScreen({ navigation }) {
     };
 
     const onLogin = async () => {
+        setIsloading(true);
         try {
             if (email !== '' && password !== '') {
                 await auth.signInWithEmailAndPassword(email, password);
@@ -35,6 +37,7 @@ export default function LoginScreen({ navigation }) {
         } catch (error) {
             setLoginError(error.message);
         }
+        setIsloading(false);
     };
 
     return (
@@ -46,6 +49,7 @@ export default function LoginScreen({ navigation }) {
             <StatusBar style='dark-content' />
             <Image style={styles.logo} source={require('../../assets/logo.png')} />
             <Text style={styles.title}>Shoppy</Text>
+            <ActivityIndicator animating={isloading} color={colors.primary} size='large' />
             <InputField
                 inputStyle={{
                     fontSize: 14
@@ -88,7 +92,9 @@ export default function LoginScreen({ navigation }) {
             <Button
                 onPress={onLogin}
                 backgroundColor={colors.primary}
-                title='Login'
+                title={
+                    isloading ? 'Logging in...' : 'Login'
+                }
                 tileColor='#fff'
                 titleSize={20}
                 containerStyle={{
@@ -128,7 +134,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 26,
         fontWeight: '700',
-        color: colors.light,
+        color: colors.white,
         alignSelf: 'center',
         paddingBottom: 24
     }

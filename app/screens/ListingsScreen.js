@@ -51,11 +51,6 @@ const listings = [
   },
 ];
 
-const wait = timeout => {
-  return new Promise(resolve => setTimeout(resolve, timeout));
-};
-
-
 function ListingsScreen() {
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -78,10 +73,8 @@ function ListingsScreen() {
   }
 
   useEffect(() => {
-    getData();
+    return getData();
   }, []);
-
-  console.log('data', data)
 
   return (
     <Screen

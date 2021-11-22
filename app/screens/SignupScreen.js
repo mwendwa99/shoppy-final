@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, Image } from 'react-native';
+import { StyleSheet, Text, Image, ActivityIndicator } from 'react-native';
 import ImageBackground from 'react-native/Libraries/Image/ImageBackground';
 
 import { Button, InputField, ErrorMessage } from '../components';
@@ -11,6 +11,7 @@ import firebase from '../config/firebase';
 const auth = firebase.auth();
 
 export default function SignupScreen({ navigation }) {
+    const [isloading, setIsloading] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -29,6 +30,7 @@ export default function SignupScreen({ navigation }) {
     };
 
     const onHandleSignup = async () => {
+        setIsloading(true);
         try {
             if (email !== '' && password !== '') {
                 await auth.createUserWithEmailAndPassword(email, password);
@@ -40,6 +42,7 @@ export default function SignupScreen({ navigation }) {
         } catch (error) {
             setSignupError(error.message);
         }
+        setIsloading(false);
     };
 
 
@@ -51,6 +54,7 @@ export default function SignupScreen({ navigation }) {
             <StatusBar style='dark-content' />
             <Image style={styles.logo} source={require('../../assets/logo.png')} />
             <Text style={styles.title}>Create new account</Text>
+            <ActivityIndicator animating={isloading} color={colors.primary} size='large' />
             <InputField
                 inputStyle={{
                     fontSize: 14,
@@ -108,7 +112,9 @@ export default function SignupScreen({ navigation }) {
             {signupError ? <ErrorMessage error={signupError} visible={true} /> : null}
             <Button
                 onPress={onHandleSignup}
-                title='Signup'
+                title={
+                    isloading ? 'Signing up...' : 'Sign up'
+                }
                 tileColor='#fff'
                 titleSize={20}
                 containerStyle={{
@@ -149,7 +155,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 26,
         fontWeight: '700',
-        color: colors.light,
+        color: colors.white,
         alignSelf: 'center',
         paddingBottom: 24
     }

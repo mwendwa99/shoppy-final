@@ -91,16 +91,50 @@ function ListingEditScreen({ navigation }) {
     // post data to firebase/firestore
     const handleSubmit = async (listing) => {
         setIsLoading(true);
-        await addDoc(collection(db, "listings"),
-            { ...listing, location, timestamp: serverTimestamp() }).
-            then(() => {
-                console.log("success");
-            }).catch(error => {
-                console.log(error);
+        const imageUrls = [];
+        const images = listing.images;
+        for (let i = 0; i < images.length; i++) {
+            const response = await fetch(images[i].uri);
+            const blob = await response.blob();
+            const ref = await addDoc(db.collection("images"), {
+                name: images[i].fileName,
+                createdAt: serverTimestamp(),
+                owner: user.uid,
+                type: "listing",
+                url: await firebase.storage().ref("listings").child(images[i].fileName).put(blob).then(snapshot => snapshot.ref.getDownloadURL()),
             });
-        setIsLoading(false);
-        navigation.navigate("Home");
+            imageUrls.push(ref.id);
+        }
+        const locationRef = await addDoc(db.collection("locations"), {
+            name: listing.title,
+            createdAt: serverTimestamp(),
+            owner: user.uid,
+            type: "listing",
+            coordinates: new firebase.firestore.GeoPoint(location.latitude, location.longitude),
+        });
+        const listingRef = await addDoc(db.collection("listings"), {
+            title: listing.title,
+            price: listing.price,
+            description: listing.description,
+            category: listing.category.value,
+            images: imageUrls,
+            location: locationRef.id,
+            createdAt: serverTimestamp(),
+            owner: user.uid,
+        });
+        navigation.navigate("Listing", { id: listingRef.id });
     };
+
+    //     await addDoc(collection(db, "listings"),
+    //         { ...listing, location, timestamp: serverTimestamp() }).
+    //         then(() => {
+    //             console.log("success");
+    //         }).catch(error => {
+    //             console.log(error);
+    //         });
+    //     setIsLoading(false);
+    //     navigation.navigate("Home");
+    // };
 
     // post image to firebase
     const handleImagePicked = async (image) => {
@@ -127,7 +161,6 @@ function ListingEditScreen({ navigation }) {
             >
                 <FormImagePicker
                     name="images"
-                    onImagePicked={handleImagePicked}
                 />
                 <AppFormField maxLength={255} name="title" placeholder="Title" />
                 <AppFormField

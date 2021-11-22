@@ -3,7 +3,8 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 import * as Yup from 'yup';
 import { StatusBar } from 'expo-status-bar';
 
-import { getFirestore, addDoc, serverTimestamp, collection } from "firebase/firestore";
+import { getFirestore, addDoc, updateDoc, serverTimestamp, collection } from "firebase/firestore";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 import firebase from '../config/firebase';
 
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
@@ -15,6 +16,10 @@ import useLocation from '../hooks/useLocation';
 import colors from '../config/colors';
 
 const db = getFirestore(firebase);
+// Create a root reference
+const storage = getStorage();
+// const storage = getStorage(firebase);
+
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
@@ -88,60 +93,56 @@ function ListingEditScreen({ navigation }) {
 
     const [isLoading, setIsLoading] = React.useState(false);
 
-    // post data to firebase/firestore
+    // function to post values to firebase/firestore
     const handleSubmit = async (listing) => {
         setIsLoading(true);
-        const imageUrls = [];
-        const images = listing.images;
-        for (let i = 0; i < images.length; i++) {
-            const response = await fetch(images[i].uri);
-            const blob = await response.blob();
-            const ref = await addDoc(db.collection("images"), {
-                name: images[i].fileName,
-                createdAt: serverTimestamp(),
-                owner: user.uid,
-                type: "listing",
-                url: await firebase.storage().ref("listings").child(images[i].fileName).put(blob).then(snapshot => snapshot.ref.getDownloadURL()),
-            });
-            imageUrls.push(ref.id);
-        }
-        const locationRef = await addDoc(db.collection("locations"), {
-            name: listing.title,
-            createdAt: serverTimestamp(),
-            owner: user.uid,
-            type: "listing",
-            coordinates: new firebase.firestore.GeoPoint(location.latitude, location.longitude),
-        });
-        const listingRef = await addDoc(db.collection("listings"), {
-            title: listing.title,
-            price: listing.price,
-            description: listing.description,
-            category: listing.category.value,
-            images: imageUrls,
-            location: locationRef.id,
-            createdAt: serverTimestamp(),
-            owner: user.uid,
-        });
-        navigation.navigate("Listing", { id: listingRef.id });
-    };
 
-    //     await addDoc(collection(db, "listings"),
-    //         { ...listing, location, timestamp: serverTimestamp() }).
-    //         then(() => {
-    //             console.log("success");
-    //         }).catch(error => {
-    //             console.log(error);
-    //         });
+        // select images from listing
+        const images = listing.images;
+
+        // reference to the images in storage
+        const imagesRef = ref(storage, "images")
+        // console.log("imagesRef: ", imagesRef);
+
+        // loop through images and upload to storage
+        images.map((image) => {
+            // upload image to storage
+            uploadBytes(imagesRef, image.base64, image.filename)
+                .then((uploadedImage) => {
+                    console.log("uploadedImage: ", uploadedImage);
+                    // add image to listing
+                    listing.images = [...listing.images, uploadedImage];
+                })
+                .catch((error) => {
+                    console.log("error: ", error);
+                });
+        });
+
+        // add listing to firestore
+        addDoc(db, "listings", listing)
+            .then(() => {
+                setIsLoading(false);
+                navigation.navigate("Home");
+            })
+            .catch((error) => {
+                console.log("error: ", error);
+            });
+    };
+    // // select images from listing
+    // const images = listing.images;
+    // // create a reference to the images folder
+    // const imagesRef = ref(storage, "images");
+    // // loop through images and upload them to firebase
+    // for (let i = 0; i < images.length; i++) {
+    //     // create a reference to the image
+    //     const imageRef = ref(imagesRef, listing.id + "/" + images[i].name);
+    //     // upload the image to firebase
+    //     await uploadBytes(imageRef, images[i].data);
+    // }
+
     //     setIsLoading(false);
     //     navigation.navigate("Home");
     // };
-
-    // post image to firebase
-    const handleImagePicked = async (image) => {
-        const imageRef = collection(db, "images").doc();
-        await imageRef.set({ uri: image.uri });
-        return imageRef.id;
-    };
 
     return (
         <Screen style={styles.container}>

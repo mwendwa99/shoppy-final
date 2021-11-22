@@ -55,6 +55,11 @@ function ListingsScreen() {
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
+  // useEffect to get data from firestore
+  useEffect(() => {
+    getData();
+  }, []);
+
   const onRefresh = () => {
     setRefreshing(true);
     getData();
@@ -72,28 +77,19 @@ function ListingsScreen() {
     setRefreshing(false);
   }
 
-  useEffect(() => {
-    return getData();
-  }, []);
 
   return (
     <Screen
-      // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       style={styles.screen}>
       <StatusBar style='dark-content' />
-      {/* <ScrollView
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      > */}
       <FlatList
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        // refreshing={refreshing}
-        // onRefresh={() => onRefresh}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         data={data}
         extraData={data}
-        // keyExtractor={(data) => data.id.toString()}
-        keyExtractor={(data, index) => index}
+        keyExtractor={(data) => data.id.toString()}
+        // keyExtractor={(data, index) => index}
         progressViewOffset={100}
         renderItem={({ item }) => (
           <Card
@@ -103,7 +99,6 @@ function ListingsScreen() {
           />
         )}
       />
-      {/* </ScrollView> */}
     </Screen>
   );
 }

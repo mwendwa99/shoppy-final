@@ -81,14 +81,27 @@ const categories = [
 ];
 // **********************************************************************
 
-function ListingEditScreen() {
+function ListingEditScreen({ navigation }) {
     const location = useLocation();
     const { user } = useContext(AuthenticatedUserContext);
 
     // post data to firebase/firestore
     const handleSubmit = async (listing) => {
         await addDoc(collection(db, "listings"),
-            { ...listing, location, timestamp: serverTimestamp() });
+            { ...listing, location, timestamp: serverTimestamp() }).
+            then(() => {
+                console.log("success");
+                navigation.navigate("Home");
+            }).catch(error => {
+                console.log(error);
+            });
+    };
+
+    // post image to firebase
+    const handleImagePicked = async (image) => {
+        const imageRef = collection(db, "images").doc();
+        await imageRef.set({ uri: image.uri });
+        return imageRef.id;
     };
 
     return (
@@ -105,7 +118,10 @@ function ListingEditScreen() {
                 onSubmit={(values) => handleSubmit(values)}
                 validationSchema={validationSchema}
             >
-                <FormImagePicker name="images" />
+                <FormImagePicker
+                    name="images"
+                    onImagePicked={handleImagePicked}
+                />
                 <AppFormField maxLength={255} name="title" placeholder="Title" />
                 <AppFormField
                     keyboardType="numeric"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, RefreshControl, ScrollView, StyleSheet } from "react-native";
 // import statement to get from firestore
 import { getFirestore, query, collection, getDocs } from 'firebase/firestore';
 
@@ -50,12 +50,28 @@ const listings = [
   },
 ];
 
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
+
+
 function ListingsScreen() {
   const [data, setData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
   // function to get data from firestore
   const getData = async () => {
     const data = await getDocs(dbListings);
-    const values = data.docs.map(doc => doc.data());
+    // map data with id set it to varialbe
+    const values = data.docs.map(listing => ({
+      ...listing.data(),
+      id: listing.id,
+    }));
     setData(values);
   }
 
@@ -66,12 +82,18 @@ function ListingsScreen() {
   console.log('data', data)
 
   return (
-    <Screen style={styles.screen}>
+    <Screen
+      // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      style={styles.screen}>
+      {/* <ScrollView
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      > */}
       <FlatList
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         data={data}
-        keyExtractor={(data) => data.description}
+        keyExtractor={(data) => data.id.toString()}
         renderItem={({ item }) => (
           <Card
             title={item.title}
@@ -80,6 +102,7 @@ function ListingsScreen() {
           />
         )}
       />
+      {/* </ScrollView> */}
     </Screen>
   );
 }

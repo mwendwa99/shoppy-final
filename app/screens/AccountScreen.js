@@ -63,7 +63,7 @@ export default function AccountScreen({ navigation }) {
                             IconComponent={
                                 <Icon name={item.icon.name} backgroundColor={item.icon.backgroundColor} />
                             }
-                        // onPress={() => navigation.navigate(item.targetScreen)}
+                            onPress={() => navigation.navigate(item.targetScreen)}
                         />
                     }
                 />

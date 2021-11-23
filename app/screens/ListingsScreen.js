@@ -51,7 +51,7 @@ const listings = [
   },
 ];
 
-function ListingsScreen() {
+function ListingsScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -60,7 +60,7 @@ function ListingsScreen() {
     getData();
   }, []);
 
-  const onRefresh = () => {
+  const onRefresh = ({ navigation }) => {
     setRefreshing(true);
     getData();
   };
@@ -96,6 +96,8 @@ function ListingsScreen() {
             title={item.title}
             subTitle={"Kes " + item.price}
             image={item.image}
+            itemId={item.id}
+            navigation={navigation}
           />
         )}
       />

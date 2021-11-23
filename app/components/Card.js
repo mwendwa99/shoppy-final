@@ -1,18 +1,26 @@
 import React from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import AppText from "./AppText";
 import colors from "../config/colors";
 
-function Card({ title, subTitle, image }) {
+function Card({ title, subTitle, itemId, image, navigation }) {
+  // function to navigate to the listing details screen
+  const handlePress = () => {
+    navigation.navigate("Listings", { id: itemId });
+  };
+
+  // console.log("Card itemId: ", itemId);
   return (
-    <View elevation={1.5} style={styles.card}>
-      <Image style={styles.image} source={image} />
-      <View style={styles.detailsContainer}>
-        <AppText style={styles.title}>{title}</AppText>
-        <AppText style={styles.subTitle}>{subTitle}</AppText>
+    <TouchableOpacity onPress={() => handlePress()}>
+      <View elevation={1.5} style={styles.card}>
+        <Image style={styles.image} source={image} />
+        <View style={styles.detailsContainer}>
+          <AppText style={styles.title}>{title}</AppText>
+          <AppText style={styles.subTitle}>{subTitle}</AppText>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

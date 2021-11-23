@@ -96,25 +96,22 @@ function ListingEditScreen({ navigation }) {
     // function to post values to firebase/firestore
     const handleSubmit = async (listing) => {
         setIsLoading(true);
-
         // select images from listing
         const images = listing.images;
 
-        // reference to the images in storage
-        const imagesRef = ref(storage, "images")
-        // console.log("imagesRef: ", imagesRef);
-
         // loop through images and upload to storage
         images.map((image) => {
-            // upload image to storage
-            uploadBytes(imagesRef, image.base64, image.filename)
-                .then((uploadedImage) => {
-                    console.log("uploadedImage: ", uploadedImage);
-                    // add image to listing
-                    listing.images = [...listing.images, uploadedImage];
+            const imageExtension = image.split(".").pop();
+            const imageName = `${image.split("/").pop()}`;
+            const imageRef = ref(storage, `images/${imageName}`);
+
+            // upload image to storage using the put() method
+            uploadBytes(imageRef, imageExtension, image)
+                .then(() => {
+                    console.log("image uploaded");
                 })
                 .catch((error) => {
-                    console.log("error: ", error);
+                    console.log("error uploading image: ", error);
                 });
         });
 
@@ -127,6 +124,9 @@ function ListingEditScreen({ navigation }) {
             .catch((error) => {
                 console.log("error: ", error);
             });
+
+        setIsLoading(false);
+        navigation.navigate("Home");
     };
     // // select images from listing
     // const images = listing.images;

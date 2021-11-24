@@ -4,8 +4,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 import colors from '../config/colors';
+import { useImage } from '../../context/ImageContext';
 
 const ImageInput = ({ imageUri, onChangeImage }) => {
+    const { setImageBase64 } = useImage();
+
+
     useEffect(() => {
         requestPermission();
     }, []);
@@ -32,6 +36,9 @@ const ImageInput = ({ imageUri, onChangeImage }) => {
             });
             if (!result.cancelled) {
                 onChangeImage(result.uri)
+                setImageBase64(result.base64);
+                // add result.base64 to the image
+
             }
         } catch (error) {
             console.log('error reading image' + error)

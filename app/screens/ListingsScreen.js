@@ -57,7 +57,7 @@ function ListingsScreen({ navigation }) {
 
   // useEffect to get data from firestore
   useEffect(() => {
-    getData();
+    return getData();
   }, []);
 
   const onRefresh = ({ navigation }) => {
@@ -67,14 +67,18 @@ function ListingsScreen({ navigation }) {
 
   // function to get data from firestore
   const getData = async () => {
-    const data = await getDocs(dbListings);
-    // map data with id set it to varialbe
-    const values = data.docs.map(listing => ({
-      ...listing.data(),
-      id: listing.id,
-    }));
-    setData(values);
-    setRefreshing(false);
+    try {
+      const data = await getDocs(dbListings);
+      // map data with id set it to varialbe
+      const values = data.docs.map(listing => ({
+        ...listing.data(),
+        id: listing.id,
+      }));
+      setData(values);
+      setRefreshing(false);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 

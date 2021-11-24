@@ -1,28 +1,24 @@
 import React from "react";
 import { View, Image, StyleSheet } from "react-native";
 import AppText from "../components/AppText";
-import { getFirestore, query, getDocs, collection } from "firebase/firestore";
+import { getFirestore, query, getDoc, collection } from "firebase/firestore";
 
 import ListItem from "../components/ListItem";
 import colors from "../config/colors";
 import firebase from "../config/firebase";
 
 const db = getFirestore(firebase);
+// ge
 
 function ListingDetailsScreen({ navigation }) {
-  // get item from firestore
-  // const dbListings = query(collection(db, "listings"));
-  // const listing = getDocs(dbListings, id);
-
-  // console.log("ListingDetailsScreen id: ", id);
-  // get id from navigation
-
+  // getDoc reference to db
+  const document = getDoc()
 
 
   // function to get item from firestore
   const getItem = async () => {
     const dbListings = await query(collection(db, "listings"));
-    const listing = await getDocs(dbListings, id);
+    const listing = await getDoc(dbListings, id);
     return listing;
   };
 

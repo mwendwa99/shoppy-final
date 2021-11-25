@@ -3,11 +3,12 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 import * as Yup from 'yup';
 import { StatusBar } from 'expo-status-bar';
 
-import { getFirestore, addDoc, updateDoc, serverTimestamp, collection } from "firebase/firestore";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getFirestore, addDoc, serverTimestamp, collection } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import firebase from '../config/firebase';
 
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
+import { useImage } from '../../context/ImageContext';
 import { AppForm, AppFormField, SubmitButton, AppFormPicker } from '../components/forms';
 import CategoryPickerItem from '../components/CategoryPickerItem';
 import FormImagePicker from '../components/forms/FormImagePicker';
@@ -18,8 +19,6 @@ import colors from '../config/colors';
 const db = getFirestore(firebase);
 // Create a root reference
 const storage = getStorage();
-// const storage = getStorage(firebase);
-
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
@@ -90,59 +89,59 @@ const categories = [
 function ListingEditScreen({ navigation }) {
     const location = useLocation();
     const { user } = useContext(AuthenticatedUserContext);
+    // console.log("user: ", user);
 
     const [isLoading, setIsLoading] = React.useState(false);
 
-    // function to post values to firebase/firestore
+    // function to post listing to firestore
     const handleSubmit = async (listing) => {
         setIsLoading(true);
         // select images from listing
-        const images = listing.images;
+        const images = listing.images.map(image => image);
 
-        // loop through images and upload to storage
-        images.map((image) => {
-            const imageExtension = image.split(".").pop();
-            const imageName = `${image.split("/").pop()}`;
-            const imageRef = ref(storage, `images/${imageName}`);
+        // upload images to firebase storage
+        const imageUrls = await Promise.all(
+            images.map(async (image) => {
+                const imageBlob = new Blob([image], { type: 'image/jpeg' });
+                let imageName = image.split('/').pop();
+                const imageRef = ref(storage, `images/${imageName}`);
 
-            // upload image to storage using the put() method
-            uploadBytes(imageRef, imageExtension, image)
-                .then(() => {
-                    console.log("image uploaded");
-                })
-                .catch((error) => {
-                    console.log("error uploading image: ", error);
-                });
-        });
+                // upload image to firebase storage
+                await uploadBytes(imageRef, imageBlob)
+                    .then(() => {
+                        console.log('image uploaded');
+                    }).catch(error => {
+                        console.log('error uploading image', error);
+                    });
+
+                // get download url
+                const downloadUrl = await getDownloadURL(imageRef)
+                    .then(url => {
+                        console.log('image url: ', url);
+                        return url;
+                    }).catch(error => {
+                        console.log('error getting image url', error);
+                    });
+
+                return downloadUrl;
+            }));
+        // create listing object
+        const newListing = {
+            ...listing,
+            images: imageUrls,
+            createdAt: serverTimestamp(),
+            userId: user.uid,
+            location: location,
+        };
 
         // add listing to firestore
-        addDoc(db, "listings", listing)
-            .then(() => {
-                setIsLoading(false);
-                navigation.navigate("Home");
-            })
-            .catch((error) => {
-                console.log("error: ", error);
-            });
-
+        await addDoc(collection(db, 'listings'), newListing);
+        // navigation.navigate('Listing', { id: result.id });
         setIsLoading(false);
-        navigation.navigate("Home");
-    };
-    // // select images from listing
-    // const images = listing.images;
-    // // create a reference to the images folder
-    // const imagesRef = ref(storage, "images");
-    // // loop through images and upload them to firebase
-    // for (let i = 0; i < images.length; i++) {
-    //     // create a reference to the image
-    //     const imageRef = ref(imagesRef, listing.id + "/" + images[i].name);
-    //     // upload the image to firebase
-    //     await uploadBytes(imageRef, images[i].data);
-    // }
+        navigation.navigate('Home');
 
-    //     setIsLoading(false);
-    //     navigation.navigate("Home");
-    // };
+    };
+
 
     return (
         <Screen style={styles.container}>

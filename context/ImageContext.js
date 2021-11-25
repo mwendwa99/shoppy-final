@@ -14,7 +14,7 @@ const useImage = () => {
 };
 
 const ImageProvider = ({ children }) => {
-    const [imageBase64, setImageBase64] = useState(null);
+    const [imageBase64, setImageBase64] = useState('');
 
     const value = {
         imageBase64,

@@ -35,8 +35,9 @@ const ImageInput = ({ imageUri, onChangeImage }) => {
                 base64: true
             });
             if (!result.cancelled) {
-                onChangeImage(result.uri)
                 setImageBase64(result.base64);
+                onChangeImage(result.uri)
+                // console.log("BASE64", result)
                 // add result.base64 to the image
 
             }

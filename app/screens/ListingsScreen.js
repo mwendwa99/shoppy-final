@@ -101,7 +101,7 @@ function ListingsScreen({ navigation }) {
             subTitle={"Kes " + item.price}
             image={item.image}
             itemId={item.id}
-            navigation={navigation}
+          // navigation={navigation}
           />
         )}
       />

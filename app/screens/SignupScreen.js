@@ -3,12 +3,14 @@ import React from 'react';
 import { useState } from 'react';
 import { StyleSheet, Text, Image, ActivityIndicator } from 'react-native';
 import ImageBackground from 'react-native/Libraries/Image/ImageBackground';
+import { getFirestore, query, collection, addDoc } from 'firebase/firestore';
 
 import { Button, InputField, ErrorMessage } from '../components';
 import colors from '../config/colors';
 import firebase from '../config/firebase';
 
 const auth = firebase.auth();
+const storage = firebase.storage();
 
 export default function SignupScreen({ navigation }) {
     const [isloading, setIsloading] = useState(false);
@@ -39,6 +41,12 @@ export default function SignupScreen({ navigation }) {
                     displayName: name,
                 });
             }
+            // add user to user collection
+            await addDoc(collection(getFirestore(), 'users'), {
+                name,
+                email,
+                createdAt: serverTimestamp(),
+            });
         } catch (error) {
             setSignupError(error.message);
         }

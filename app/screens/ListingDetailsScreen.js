@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
-import { ActivityIndicator, Chip } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
+import { Chip, Button } from 'react-native-elements'
 import AppText from "../components/AppText";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 
@@ -12,7 +13,6 @@ const db = getFirestore(firebase);
 
 function ListingDetailsScreen({ route, navigation }) {
   const [data, setData] = useState(null);
-  // const [loadi, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // get id from route
@@ -45,14 +45,21 @@ function ListingDetailsScreen({ route, navigation }) {
       <Image style={styles.image} source={require("../../assets/couch.jpg")} />
       <View style={[styles.detailsContainer]}>
         <Chip
-          style={[styles.chip, { backgroundColor: data.category.backgroundColor }]}
-          icon={data.category.icon}
-          mode="outlined"
-        >
-          <AppText style={[styles.title, { color: colors.white, fontStyle: 'italic' }]}>
-            {data.category.label}
-          </AppText>
-        </Chip>
+          title={data.category.label}
+          titleStyle={styles.chipTitle}
+          titleProps={styles.chipTitle}
+          icon={{
+            name: data.category.icon,
+            type: "material-community",
+            size: 20,
+            color: colors.white,
+          }}
+          type="solid"
+          buttonStyle={{
+            backgroundColor: data.category.backgroundColor,
+            marginVertical: 10,
+          }}
+        />
         <AppText style={styles.title}>
           name: {data.title}
         </AppText>
@@ -62,23 +69,55 @@ function ListingDetailsScreen({ route, navigation }) {
         <AppText style={[styles.price], { fontStyle: "italic" }}>
           description: {data.description}
         </AppText>
-        <View style={styles.userContainer}>
-          <ListItem
-            image={require("../../assets/user.jpg")}
-            title="Brian Mwendwa"
-            subTitle="5 Listings"
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Buy"
+            type="outline"
+            titleStyle={{ color: colors.primary }}
+            buttonStyle={[styles.button], { borderColor: colors.primary }}
+            icon={{
+              name: "cart-outline",
+              type: "material-community",
+              color: colors.primary,
+              size: 20,
+            }}
+            onPress={() => {
+              navigation.navigate("Booking", {
+                id: listingId,
+                data: data,
+              });
+            }}
+          />
+          <Button
+            containerStyle={styles.button}
+            title="Back"
+            type="outline"
+            titleStyle={{ color: colors.secondary }}
+            buttonStyle={{ borderColor: colors.secondary }}
+            icon={{
+              name: "arrow-left",
+              type: "material-community",
+              color: colors.secondary,
+              size: 20,
+            }}
+            onPress={() => {
+              navigation.goBack();
+            }}
           />
         </View>
       </View>
     </View>
   ) : (
     <View style={styles.centered}>
-      <ActivityIndicator animating={loading} color={colors.primary} size="large" />
+      <ActivityIndicator size="large" color={colors.primary} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  button: {
+    marginVertical: 10,
+  },
   centered: {
     flex: 1,
     justifyContent: "center",
@@ -92,17 +131,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300,
   },
-  chip: {
-    marginVertical: 4,
-    padding: 4,
-    height: 40,
-    width: 100,
-    elevation: 2,
-  },
-  chipText: {
-    color: "#ffffff",
-    fontWeight: "900"
-
+  chipTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: colors.white,
   },
   price: {
     marginVertical: 10,
@@ -114,9 +146,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "900",
   },
-  userContainer: {
+  buttonContainer: {
     marginVertical: 50,
     width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+
   },
 });
 

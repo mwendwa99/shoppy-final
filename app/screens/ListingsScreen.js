@@ -8,6 +8,7 @@ import firebase from '../config/firebase';
 import Screen from "../components/Screen";
 import Card from "../components/Card";
 import colors from "../config/colors";
+import { ActivityIndicator } from "react-native-paper";
 
 const db = getFirestore(firebase);
 const dbListings = query(collection(db, "listings"));
@@ -53,6 +54,7 @@ const listings = [
 
 function ListingsScreen({ navigation }) {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   // useEffect to get data from firestore
@@ -67,6 +69,7 @@ function ListingsScreen({ navigation }) {
 
   // function to get data from firestore
   const getData = async () => {
+    setLoading(true)
     try {
       const data = await getDocs(dbListings);
       // map data with id set it to varialbe
@@ -79,10 +82,11 @@ function ListingsScreen({ navigation }) {
     } catch (error) {
       console.log(error);
     }
+    setLoading(false)
   }
 
 
-  return (
+  return data ? (
     <Screen
       style={styles.screen}>
       <StatusBar style='dark-content' />
@@ -106,12 +110,14 @@ function ListingsScreen({ navigation }) {
         )}
       />
     </Screen>
-  );
+  ) : (
+    <ActivityIndicator animating={loading} color={colors.primary} size="large" />
+  )
 }
 
 const styles = StyleSheet.create({
   screen: {
-    padding: 10,
+    paddingHorizontal: 10,
     backgroundColor: colors.light,
   },
 });

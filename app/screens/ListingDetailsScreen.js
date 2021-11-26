@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
-import { Chip } from 'react-native-paper';
+import { ActivityIndicator, Chip } from 'react-native-paper';
 import AppText from "../components/AppText";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 
@@ -12,6 +12,8 @@ const db = getFirestore(firebase);
 
 function ListingDetailsScreen({ route, navigation }) {
   const [data, setData] = useState(null);
+  // const [loadi, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // get id from route
   const listingId = route.params.id;
@@ -19,6 +21,7 @@ function ListingDetailsScreen({ route, navigation }) {
 
   // function to get listing from firestore
   const getListing = async () => {
+    setLoading(true);
     try {
       const listingRef = doc(db, "listings", listingId);
       const listing = await getDoc(listingRef);
@@ -26,6 +29,7 @@ function ListingDetailsScreen({ route, navigation }) {
     } catch (err) {
       console.log(err);
     }
+    setLoading(false);
   };
 
   // useEffect to get listing data
@@ -69,12 +73,17 @@ function ListingDetailsScreen({ route, navigation }) {
     </View>
   ) : (
     <View style={styles.centered}>
-      <AppText>Loading...</AppText>
+      <ActivityIndicator animating={loading} color={colors.primary} size="large" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   detailsContainer: {
     padding: 20,
     height: "100%",

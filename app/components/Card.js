@@ -8,6 +8,7 @@ function Card({ title, subTitle, itemId, image, navigation }) {
   // function to navigate to the listing details screen
   const handlePress = () => {
     navigation.navigate("Listings", { id: itemId });
+    // console.log("itemId", itemId)
   };
 
   // console.log("Card itemId: ", itemId);

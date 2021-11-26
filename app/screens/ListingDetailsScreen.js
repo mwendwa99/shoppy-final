@@ -1,35 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import AppText from "../components/AppText";
-import { getFirestore, query, getDoc, collection } from "firebase/firestore";
+import { getFirestore, query, getDoc, getDocs, doc, collection, where } from "firebase/firestore";
 
 import ListItem from "../components/ListItem";
 import colors from "../config/colors";
 import firebase from "../config/firebase";
 
 const db = getFirestore(firebase);
-// ge
 
-function ListingDetailsScreen({ navigation }) {
-  // getDoc reference to db
-  const document = getDoc()
+function ListingDetailsScreen({ route, navigation }) {
+  const [data, setData] = useState(null);
 
+  // get id from route
+  const listingId = route.params.id;
+  console.log("listing id", listingId);
 
-  // function to get item from firestore
-  const getItem = async () => {
-    const dbListings = await query(collection(db, "listings"));
-    const listing = await getDoc(dbListings, id);
-    return listing;
+  // function to get listing from firestore
+  const getListing = async () => {
+    try {
+      const listingRef = doc(db, "listings", listingId);
+      const listing = await getDoc(listingRef);
+      console.log("listing", listing.data());
+      setData(listing.data());
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  // get item from firestore
-  const listing = getItem();
+  // useEffect to get listing data
+  useEffect(() => {
+    getListing();
+  }, []);
 
-  console.log("listing", listing);
+
 
   return (
     <View>
       <Image style={styles.image} source={require("../../assets/couch.jpg")} />
+      {/* <Image style={styles.image} source={data.images[0]} /> */}
       <View style={styles.detailsContainer}>
         <AppText style={styles.title}>Red jacket for sale</AppText>
         <AppText style={styles.price}>$100</AppText>

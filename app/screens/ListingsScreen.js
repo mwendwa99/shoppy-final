@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, RefreshControl, ScrollView, StyleSheet } from "react-native";
+import { FlatList, RefreshControl, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 // import statement to get from firestore
 import { getFirestore, query, collection, getDocs } from 'firebase/firestore';
@@ -57,10 +57,10 @@ function ListingsScreen({ navigation }) {
 
   // useEffect to get data from firestore
   useEffect(() => {
-    return getData();
+    getData();
   }, []);
 
-  const onRefresh = ({ navigation }) => {
+  const onRefresh = () => {
     setRefreshing(true);
     getData();
   };
@@ -101,7 +101,7 @@ function ListingsScreen({ navigation }) {
             subTitle={"Kes " + item.price}
             image={item.image}
             itemId={item.id}
-          // navigation={navigation}
+            navigation={navigation}
           />
         )}
       />

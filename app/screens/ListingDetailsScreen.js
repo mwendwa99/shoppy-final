@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
+import { Chip } from 'react-native-paper';
 import AppText from "../components/AppText";
-import { getFirestore, query, getDoc, getDocs, doc, collection, where } from "firebase/firestore";
+import { getFirestore, getDoc, doc } from "firebase/firestore";
 
 import ListItem from "../components/ListItem";
 import colors from "../config/colors";
@@ -21,7 +22,6 @@ function ListingDetailsScreen({ route, navigation }) {
     try {
       const listingRef = doc(db, "listings", listingId);
       const listing = await getDoc(listingRef);
-      console.log("listing", listing.data());
       setData(listing.data());
     } catch (err) {
       console.log(err);
@@ -33,15 +33,31 @@ function ListingDetailsScreen({ route, navigation }) {
     getListing();
   }, []);
 
+  console.log("data", data);
 
 
-  return (
+  return data ? (
     <View>
       <Image style={styles.image} source={require("../../assets/couch.jpg")} />
-      {/* <Image style={styles.image} source={data.images[0]} /> */}
-      <View style={styles.detailsContainer}>
-        <AppText style={styles.title}>Red jacket for sale</AppText>
-        <AppText style={styles.price}>$100</AppText>
+      <View style={[styles.detailsContainer]}>
+        <Chip
+          style={[styles.chip, { backgroundColor: data.category.backgroundColor }]}
+          icon={data.category.icon}
+          mode="outlined"
+        >
+          <AppText style={[styles.title, { color: colors.white, fontStyle: 'italic' }]}>
+            {data.category.label}
+          </AppText>
+        </Chip>
+        <AppText style={styles.title}>
+          name: {data.title}
+        </AppText>
+        <AppText style={[styles.price]}>
+          price: Kes {data.price}
+        </AppText>
+        <AppText style={[styles.price], { fontStyle: "italic" }}>
+          description: {data.description}
+        </AppText>
         <View style={styles.userContainer}>
           <ListItem
             image={require("../../assets/user.jpg")}
@@ -51,29 +67,47 @@ function ListingDetailsScreen({ route, navigation }) {
         </View>
       </View>
     </View>
+  ) : (
+    <View style={styles.centered}>
+      <AppText>Loading...</AppText>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   detailsContainer: {
     padding: 20,
+    height: "100%",
   },
   image: {
     width: "100%",
     height: 300,
   },
+  chip: {
+    marginVertical: 4,
+    padding: 4,
+    height: 40,
+    width: 100,
+    elevation: 2,
+  },
+  chipText: {
+    color: "#ffffff",
+    fontWeight: "900"
+
+  },
   price: {
-    color: colors.secondary,
-    fontWeight: "bold",
-    fontSize: 20,
+    marginVertical: 10,
+    fontWeight: "900",
+    fontSize: 18,
     marginVertical: 10,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "500",
+    fontSize: 18,
+    fontWeight: "900",
   },
   userContainer: {
-    marginVertical: 40,
+    marginVertical: 50,
+    width: "100%",
   },
 });
 

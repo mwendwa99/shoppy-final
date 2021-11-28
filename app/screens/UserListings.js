@@ -36,25 +36,34 @@ const UserListings = () => {
     const getUserListings = async () => {
         setLoading(true);
         const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            setListings(prevListings => [...prevListings, doc.data()]);
-        });
+        // querySnapshot.forEach((doc) => {
+        //     // doc.data() is never undefined for query doc snapshots
+        //     setListings(prevListings => [...prevListings, doc.data(), doc.data()]);
+        // });
+        const items = querySnapshot.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id,
+        }));
+        setListings(items);
         setLoading(false);
     }
-
+    console.log("listings", listings);
 
     return !loading ? (
         <View style={styles.container}>
             {/* render flatlist */}
             <FlatList
                 data={listings}
+                progressViewOffset={100}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                extraData={listings}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 keyExtractor={(item) => item.id}
                 ItemSeparatorComponent={ListItemSeparator}
-                renderItem={({ item }) => (
+                renderItem={({ item, index }) => (
                     <ListItem
-                        key={item.id}
+                        key={index}
                         title={item.title}
                         description={item.description}
                         subTitle={`Kes: ${item.price}`}

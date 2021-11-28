@@ -8,7 +8,8 @@ import {
 } from "react-native";
 import AppText from "./AppText";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import UserAvatar from "react-native-user-avatar"
+import UserAvatar from "react-native-user-avatar";
+import { Chip } from "react-native-elements";
 
 import colors from "../config/colors";
 
@@ -20,6 +21,9 @@ function ListItem({
   onPress,
   renderRightActions,
   avatar,
+  Category,
+  price,
+  description,
 }) {
   return (
     <Swipeable renderRightActions={renderRightActions}>
@@ -33,6 +37,26 @@ function ListItem({
               style={styles.avatar}
             />
           ) : null}
+          {Category ? (
+            <Chip
+              title={Category.label}
+              titleStyle={styles.chipTitle}
+              titleProps={styles.chipTitle}
+              icon={{
+                name: Category.icon,
+                type: "material-community",
+                size: 20,
+                color: colors.white,
+              }}
+              type="solid"
+              buttonStyle={{
+                backgroundColor: Category.backgroundColor,
+                marginVertical: 10,
+              }}
+            />
+          ) : (
+            null
+          )}
           {IconComponent}
           {image && <Image style={styles.image} source={image} />}
           <View style={styles.detailsContainer}>

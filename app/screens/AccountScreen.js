@@ -18,7 +18,7 @@ const menuItems = [
             name: "format-list-bulleted",
             backgroundColor: colors.primary,
         },
-        targetScreen: "UserListings"
+        targetScreen: "My Listings"
     },
     {
         title: "My Cart",

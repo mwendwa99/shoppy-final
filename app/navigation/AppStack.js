@@ -26,7 +26,7 @@ export default function AppStack() {
                 <Stack.Screen name='Shoppy' component={AppNavigator} />
                 <Stack.Screen name='Messages' component={MessagesScreen} />
                 <Stack.Screen name='Listings' component={ListingDetailsScreen} />
-                <Stack.Screen name='UserListings' component={UserListings} />
+                <Stack.Screen name='My Listings' component={UserListings} />
                 <Stack.Screen name='Cart' component={CartScreen} />
             </Stack.Navigator>
         </ImageProvider>

@@ -17,7 +17,7 @@ function ListingDetailsScreen({ route, navigation }) {
 
   // get id from route
   const listingId = route.params.id;
-  console.log("listing id", listingId);
+  // console.log("listing id", listingId);
 
   // function to get listing from firestore
   const getListing = async () => {
@@ -37,7 +37,7 @@ function ListingDetailsScreen({ route, navigation }) {
     getListing();
   }, []);
 
-  console.log("data", data);
+  // console.log("data", data);
 
 
   return data ? (

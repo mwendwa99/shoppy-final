@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import AppText from "./AppText";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import UserAvatar from "react-native-user-avatar"
 
 import colors from "../config/colors";
 
@@ -18,11 +19,20 @@ function ListItem({
   IconComponent,
   onPress,
   renderRightActions,
+  avatar,
 }) {
   return (
     <Swipeable renderRightActions={renderRightActions}>
       <TouchableHighlight underlayColor={colors.light} onPress={onPress}>
         <View style={styles.container}>
+          {avatar ? (
+            <UserAvatar
+              name={title}
+              size={40}
+              bgColors={['#ccc', '#fafafa', '#ccaabb']}
+              style={styles.avatar}
+            />
+          ) : null}
           {IconComponent}
           {image && <Image style={styles.image} source={image} />}
           <View style={styles.detailsContainer}>
@@ -36,6 +46,12 @@ function ListItem({
 }
 
 const styles = StyleSheet.create({
+  avatar: {
+    width: 70,
+    height: 70,
+    borderRadius: 20,
+    marginRight: 10,
+  },
   container: {
     flexDirection: "row",
     padding: 15,

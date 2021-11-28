@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+// import UserAvatar from 'react-native-user-avatar';
 
 import firebase from '../config/firebase'
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider'
@@ -12,21 +13,29 @@ import { StatusBar } from 'expo-status-bar'
 
 const menuItems = [
     {
+        title: "My Profile",
+        icon: {
+            name: "account",
+            backgroundColor: colors.primary,
+        },
+        targetScreen: "Profile"
+    },
+    {
         title: "My listings",
         icon: {
             name: "format-list-bulleted",
-            backgroundColor: colors.primary,
+            backgroundColor: colors.secondary,
         },
         targetScreen: "Listings"
     },
-    {
-        title: "My Messages",
-        icon: {
-            name: "email",
-            backgroundColor: colors.secondary,
-        },
-        targetScreen: "Messages"
-    },
+    // {
+    //     title: "My Messages",
+    //     icon: {
+    //         name: "email",
+    //         backgroundColor: colors.secondary,
+    //     },
+    //     targetScreen: "Messages"
+    // },
 ]
 
 const auth = firebase.auth()
@@ -49,7 +58,7 @@ export default function AccountScreen({ navigation }) {
                 <ListItem
                     title={user.displayName}
                     subTitle={user.email}
-                    image={require('../../assets/user.jpg')}
+                    avatar={true}
                 />
             </View>
             <View style={styles.container}>

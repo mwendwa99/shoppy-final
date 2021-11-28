@@ -5,14 +5,14 @@ import { getFirestore, updateDoc, getDoc, collection } from 'firebase/firestore'
 
 import firebase from '../config/firebase';
 
-const Profile = () => {
+const UserListings = () => {
     return (
         <View>
-            <Text>Profile</Text>
+            <Text>UserListings</Text>
         </View>
     )
 }
 
-export default Profile
+export default UserListings
 
 const styles = StyleSheet.create({})

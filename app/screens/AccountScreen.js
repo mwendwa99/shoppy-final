@@ -13,12 +13,12 @@ import { StatusBar } from 'expo-status-bar'
 
 const menuItems = [
     {
-        title: "My Profile",
+        title: "My Listings",
         icon: {
-            name: "account",
+            name: "format-list-bulleted",
             backgroundColor: colors.primary,
         },
-        targetScreen: "Profile"
+        targetScreen: "UserListings"
     },
     {
         title: "My Cart",

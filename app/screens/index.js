@@ -5,11 +5,11 @@ import ListingEditScreen from './ListingEditScreen';
 import ListingsScreen from './ListingsScreen';
 import MessagesScreen from './MessagesScreen';
 import ListingDetailsScreen from "./ListingDetailsScreen";
-import Profile from "./Profile";
+import UserListings from "./UserListings";
 import CartScreen from "./CartScreen";
 
 export {
     LoginScreen, SignupScreen, AccountScreen,
     ListingEditScreen, ListingsScreen, MessagesScreen,
-    ListingDetailsScreen, Profile, CartScreen,
+    ListingDetailsScreen, UserListings, CartScreen,
 };

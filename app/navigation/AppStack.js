@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import AppNavigator from './AppNavigator';
-import { MessagesScreen, ListingDetailsScreen } from '../screens';
+import { MessagesScreen, ListingDetailsScreen, Profile, CartScreen } from '../screens';
 import colors from '../config/colors';
 import { ImageProvider } from '../../context/ImageContext';
 
@@ -26,6 +26,8 @@ export default function AppStack() {
                 <Stack.Screen name='Shoppy' component={AppNavigator} />
                 <Stack.Screen name='Messages' component={MessagesScreen} />
                 <Stack.Screen name='Listings' component={ListingDetailsScreen} />
+                <Stack.Screen name='Profile' component={Profile} />
+                <Stack.Screen name='Cart' component={CartScreen} />
             </Stack.Navigator>
         </ImageProvider>
     );

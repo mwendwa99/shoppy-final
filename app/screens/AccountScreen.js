@@ -21,21 +21,13 @@ const menuItems = [
         targetScreen: "Profile"
     },
     {
-        title: "My listings",
+        title: "My Cart",
         icon: {
-            name: "format-list-bulleted",
+            name: "cart",
             backgroundColor: colors.secondary,
         },
-        targetScreen: "Listings"
+        targetScreen: "Cart"
     },
-    // {
-    //     title: "My Messages",
-    //     icon: {
-    //         name: "email",
-    //         backgroundColor: colors.secondary,
-    //     },
-    //     targetScreen: "Messages"
-    // },
 ]
 
 const auth = firebase.auth()

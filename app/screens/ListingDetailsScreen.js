@@ -71,7 +71,7 @@ function ListingDetailsScreen({ route, navigation }) {
         </AppText>
         <View style={styles.buttonContainer}>
           <Button
-            title="Buy"
+            title="Add to cart"
             type="outline"
             titleStyle={{ color: colors.primary }}
             buttonStyle={[styles.button], { borderColor: colors.primary }}

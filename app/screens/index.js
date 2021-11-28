@@ -6,9 +6,10 @@ import ListingsScreen from './ListingsScreen';
 import MessagesScreen from './MessagesScreen';
 import ListingDetailsScreen from "./ListingDetailsScreen";
 import Profile from "./Profile";
+import CartScreen from "./CartScreen";
 
 export {
     LoginScreen, SignupScreen, AccountScreen,
     ListingEditScreen, ListingsScreen, MessagesScreen,
-    ListingDetailsScreen, Profile,
+    ListingDetailsScreen, Profile, CartScreen,
 };

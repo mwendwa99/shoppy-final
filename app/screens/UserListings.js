@@ -47,7 +47,6 @@ const UserListings = () => {
         setListings(items);
         setLoading(false);
     }
-    console.log("listings", listings);
 
     return !loading ? (
         <View style={styles.container}>

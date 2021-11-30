@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, FlatList, StyleSheet, RefreshControl, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-elements';
 
 import { useCart } from '../../context/CartContext';
@@ -11,7 +11,6 @@ import colors from '../config/colors';
 
 const CartScreen = ({ navigation }) => {
     const { cartItems, removeFromCart, getTotalPrice } = useCart();
-    const [refreshing, setRefreshing] = useState(false);
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState(0);
 
@@ -19,14 +18,6 @@ const CartScreen = ({ navigation }) => {
         setCart(cartItems);
         setTotal(getTotalPrice());
     }, [cart]);
-
-    // function to refresh
-    const onRefresh = () => {
-        setRefreshing(true);
-        setTimeout(() => {
-            setRefreshing(false);
-        }, 1000);
-    };
 
     // delete function
     const handleDelete = (item) => {
@@ -64,11 +55,10 @@ const CartScreen = ({ navigation }) => {
         );
     }
 
-    return !cart ? (
+    return cart ? (
         <View style={styles.container}>
             <FlatList
                 data={cart}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 keyExtractor={item => item.id}
                 ItemSeparatorComponent={ListItemSeparator}
                 renderItem={({ item }) =>
@@ -78,11 +68,11 @@ const CartScreen = ({ navigation }) => {
                         }
                         title={item.title}
                         // subTitle={item.category.label}
-                        subTitle={item.desciprtion}
+                        // subTitle={item.description}
                         price={item.price}
                         onPress={() => handleDelete(item)}
                         deleteItem
-                        desciprtion={item.desciprtion}
+                        description={item.description}
                     />
                 }
             />

@@ -78,6 +78,7 @@ export default function AccountScreen({ navigation }) {
                             }
                             onPress={() => navigation.navigate(item.targetScreen)}
                             cartCount={cartCount}
+                            desciprtion={item.desciprtion}
                         />
                     }
                 />

@@ -26,7 +26,7 @@ function ListItem({
   cartCount,
   price,
   deleteItem,
-  desciprtion,
+  description,
 }) {
   return (
     <Swipeable renderRightActions={renderRightActions}>
@@ -65,6 +65,7 @@ function ListItem({
           <View style={styles.detailsContainer}>
             <AppText style={styles.title}>{title}</AppText>
             {subTitle && <AppText style={styles.subTitle}>{subTitle}</AppText>}
+            {description && <AppText style={styles.description}>{description}</AppText>}
           </View>
           {
             // add cart count only to the cart screen
@@ -74,9 +75,8 @@ function ListItem({
               </View>
             ) : null
           }
-          {price && <AppText style={styles.price}>Price: {price}</AppText>}
-          {desciprtion && <AppText style={styles.desciprtion}>{desciprtion}</AppText>}
-          {deleteItem ? (
+          {price && <AppText style={styles.price}>Kes {price}</AppText>}
+          {deleteItem && (
             <TouchableOpacity style={styles.delete} onPress={deleteItem}>
               <Icon
                 name="trash-can-outline"
@@ -84,7 +84,7 @@ function ListItem({
                 size={30}
               />
             </TouchableOpacity>
-          ) : null}
+          )}
         </View>
       </TouchableHighlight>
     </Swipeable>
@@ -92,23 +92,26 @@ function ListItem({
 }
 
 const styles = StyleSheet.create({
-  desciprtion: {
-    fontSize: 12,
-    color: colors.secondary,
+  description: {
+    fontSize: 9,
+    color: colors.medium,
     marginVertical: 5,
   },
   delete: {
-    // backgroundColor: colors.danger,
-    // padding: 10,
+    backgroundColor: colors.danger,
+    padding: 10,
     borderRadius: 50,
     marginLeft: "auto",
     marginRight: 10,
-    // elevation: 1,
+    elevation: 1,
   },
   price: {
+    color: colors.medium,
     fontSize: 12,
-    color: colors.secondary,
-    marginVertical: 5,
+    fontWeight: "bold",
+    marginVertical: 10,
+    alignSelf: "center",
+    marginLeft: "auto",
   },
   cartCount: {
     position: "absolute",
@@ -151,6 +154,7 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     color: colors.medium,
+    fontSize: 14,
   },
   title: {
     fontWeight: "500",

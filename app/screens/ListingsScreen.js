@@ -59,7 +59,12 @@ function ListingsScreen({ navigation }) {
 
   // useEffect to get data from firestore
   useEffect(() => {
+    // get data and cleanuo
     getData();
+    const unsubscribe = () => {
+      getData();
+    }
+    return unsubscribe;
   }, []);
 
   const onRefresh = () => {

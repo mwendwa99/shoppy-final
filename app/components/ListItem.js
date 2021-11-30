@@ -12,6 +12,7 @@ import UserAvatar from "react-native-user-avatar";
 import { Chip } from "react-native-elements";
 
 import colors from "../config/colors";
+import Icon from "./Icon";
 
 function ListItem({
   title,
@@ -23,6 +24,9 @@ function ListItem({
   avatar,
   Category,
   cartCount,
+  price,
+  deleteItem,
+  desciprtion,
 }) {
   return (
     <Swipeable renderRightActions={renderRightActions}>
@@ -70,6 +74,17 @@ function ListItem({
               </View>
             ) : null
           }
+          {price && <AppText style={styles.price}>Price: {price}</AppText>}
+          {desciprtion && <AppText style={styles.desciprtion}>{desciprtion}</AppText>}
+          {deleteItem ? (
+            <TouchableOpacity style={styles.delete} onPress={deleteItem}>
+              <Icon
+                name="trash-can-outline"
+                backgroundColor={colors.danger}
+                size={30}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </TouchableHighlight>
     </Swipeable>
@@ -77,6 +92,24 @@ function ListItem({
 }
 
 const styles = StyleSheet.create({
+  desciprtion: {
+    fontSize: 12,
+    color: colors.secondary,
+    marginVertical: 5,
+  },
+  delete: {
+    // backgroundColor: colors.danger,
+    // padding: 10,
+    borderRadius: 50,
+    marginLeft: "auto",
+    marginRight: 10,
+    // elevation: 1,
+  },
+  price: {
+    fontSize: 12,
+    color: colors.secondary,
+    marginVertical: 5,
+  },
   cartCount: {
     position: "absolute",
     top: "50%",

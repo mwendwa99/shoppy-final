@@ -7,7 +7,12 @@ const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);
 
     const addToCart = (item) => {
+        // there should no duplicate items in cart
+        if (cartItems.find(cartItem => cartItem.id === item.id)) {
+            return;
+        }
         setCartItems([...cartItems, item]);
+
     };
 
     const removeFromCart = (item) => {
@@ -17,7 +22,7 @@ const CartProvider = ({ children }) => {
 
     // get total price of items in cart
     const getTotalPrice = () => {
-        return cartItems.reduce((acc, item) => acc + item.price, 0);
+        return cartItems.reduce((acc, v) => acc + parseInt(v.price), 0);
     };
 
     return (

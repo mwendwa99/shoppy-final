@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 // import UserAvatar from 'react-native-user-avatar';
 
@@ -9,7 +9,8 @@ import ListItem from '../components/ListItem'
 import ListItemSeparator from '../components/ListItemSeparator'
 import Screen from '../components/Screen'
 import colors from '../config/colors'
-import { StatusBar } from 'expo-status-bar'
+import { StatusBar } from 'expo-status-bar';
+import { useCart } from '../../context/CartContext'
 
 const menuItems = [
     {
@@ -26,7 +27,7 @@ const menuItems = [
             name: "cart",
             backgroundColor: colors.secondary,
         },
-        targetScreen: "Cart"
+        targetScreen: "Cart",
     },
 ]
 
@@ -34,6 +35,17 @@ const auth = firebase.auth()
 
 export default function AccountScreen({ navigation }) {
     const { user } = useContext(AuthenticatedUserContext);
+    // cart count
+    const [cartCount, setCartCount] = useState(0)
+    const { cartItems } = useCart();
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
+                setCartCount(cartItems.length)
+            }
+        })
+        return () => unsubscribe()
+    }, [cartItems])
 
     const handleLogout = async () => {
         try {
@@ -65,6 +77,7 @@ export default function AccountScreen({ navigation }) {
                                 <Icon name={item.icon.name} backgroundColor={item.icon.backgroundColor} />
                             }
                             onPress={() => navigation.navigate(item.targetScreen)}
+                            cartCount={cartCount}
                         />
                     }
                 />

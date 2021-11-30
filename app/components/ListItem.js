@@ -22,8 +22,7 @@ function ListItem({
   renderRightActions,
   avatar,
   Category,
-  price,
-  description,
+  cartCount,
 }) {
   return (
     <Swipeable renderRightActions={renderRightActions}>
@@ -63,6 +62,14 @@ function ListItem({
             <AppText style={styles.title}>{title}</AppText>
             {subTitle && <AppText style={styles.subTitle}>{subTitle}</AppText>}
           </View>
+          {
+            // add cart count only to the cart screen
+            cartCount && title === 'My Cart' ? (
+              <View style={styles.cartCount}>
+                <AppText style={styles.cartCountText}>{cartCount}</AppText>
+              </View>
+            ) : null
+          }
         </View>
       </TouchableHighlight>
     </Swipeable>
@@ -70,6 +77,25 @@ function ListItem({
 }
 
 const styles = StyleSheet.create({
+  cartCount: {
+    position: "absolute",
+    top: "50%",
+    bottom: "50%",
+    right: 0,
+    backgroundColor: colors.primary,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+    elevation: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cartCountText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   avatar: {
     width: 70,
     height: 70,

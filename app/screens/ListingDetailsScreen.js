@@ -8,12 +8,14 @@ import { getFirestore, getDoc, doc } from "firebase/firestore";
 import ListItem from "../components/ListItem";
 import colors from "../config/colors";
 import firebase from "../config/firebase";
+import { useCart } from "../../context/CartContext";
 
 const db = getFirestore(firebase);
 
 function ListingDetailsScreen({ route, navigation }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
 
   // get id from route
   const listingId = route.params.id;
@@ -37,7 +39,11 @@ function ListingDetailsScreen({ route, navigation }) {
     getListing();
   }, []);
 
-  // console.log("data", data);
+  // function to add listing to cart
+  const addToCartHandler = () => {
+    addToCart(data);
+    navigation.navigate("Cart");
+  };
 
 
   return data ? (
@@ -81,12 +87,7 @@ function ListingDetailsScreen({ route, navigation }) {
               color: colors.primary,
               size: 20,
             }}
-            onPress={() => {
-              navigation.navigate("Booking", {
-                id: listingId,
-                data: data,
-              });
-            }}
+            onPress={() => addToCartHandler()}
           />
           <Button
             containerStyle={styles.button}

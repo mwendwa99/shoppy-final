@@ -3,15 +3,18 @@ import { FlatList, RefreshControl, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 // import statement to get from firestore
 import { getFirestore, query, collection, getDocs } from 'firebase/firestore';
+import { ref, getStorage, getDownloadURL } from "firebase/storage";
 
 import firebase from '../config/firebase';
 import Screen from "../components/Screen";
 import Card from "../components/Card";
 import colors from "../config/colors";
 import { ActivityIndicator } from "react-native-paper";
+import AppText from "../components/AppText";
 
 const db = getFirestore(firebase);
 const dbListings = query(collection(db, "listings"));
+const storage = getStorage(firebase);
 
 const listings = [
   {
@@ -61,10 +64,6 @@ function ListingsScreen({ navigation }) {
   useEffect(() => {
     // get data and cleanuo
     getData();
-    const unsubscribe = () => {
-      getData();
-    }
-    return unsubscribe;
   }, []);
 
   const onRefresh = () => {
@@ -76,20 +75,44 @@ function ListingsScreen({ navigation }) {
   const getData = async () => {
     setLoading(true)
     try {
-      const data = await getDocs(dbListings);
-      // map data with id set it to varialbe
-      const values = data.docs.map(listing => ({
+      const items = await getDocs(dbListings);
+      // image ref to firebase storage
+      // const imageRef = firebase.storage().ref("images");
+      // const imageRef = firebase.storage().ref();
+
+      // get image url from firebase storage
+      const imageUrls = await Promise.all(
+        items.docs.map(async (item) => {
+          // const imageRef = storage.ref(item.data().image);
+          const imageRef = ref(storage, `images/${item.data().image}`);
+          // const url = await imageRef.getDownloadURL();
+          getDownloadURL(imageRef).then(url => {
+            item.data().image = url;
+          });
+          return item.data().image;
+        })
+      );
+      // const url = await imageRef.child().getDownloadURL();
+      // const url = await imageRef.child(item.image).getDownloadURL();
+      // const url = await imageRef.child('images').getDownloadURL();
+      // const url = await ref(storage, item.image).getDownloadURL();
+      //     return url;
+      //   })
+      // );
+      // set items
+      console.log('IMAGE URLS', imageUrls);
+      const values = items.docs.map((listing, index) => ({
         ...listing.data(),
         id: listing.id,
-      }));
+        image: imageUrls[index],
+      }))
       setData(values);
-      setRefreshing(false);
     } catch (error) {
       console.log(error);
     }
-    setLoading(false)
-  }
-
+    setLoading(false);
+    setRefreshing(false);
+  };
 
   return data ? (
     <Screen
@@ -102,16 +125,17 @@ function ListingsScreen({ navigation }) {
         data={data}
         extraData={data}
         keyExtractor={(data) => data.id.toString()}
-        // keyExtractor={(data, index) => index}
         progressViewOffset={100}
         renderItem={({ item }) => (
-          <Card
-            title={item.title}
-            subTitle={"Kes " + item.price}
-            image={item.image}
-            itemId={item.id}
-            navigation={navigation}
-          />
+          <>
+            <Card
+              title={item.title}
+              subTitle={"Kes " + item.price}
+              image={item.image}
+              itemId={item.id}
+              navigation={navigation}
+            />
+          </>
         )}
       />
     </Screen>
@@ -122,6 +146,7 @@ function ListingsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   screen: {
+    marginTop: 10,
     paddingHorizontal: 10,
     backgroundColor: colors.light,
   },

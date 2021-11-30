@@ -52,7 +52,8 @@ function ListingDetailsScreen({ route, navigation }) {
 
   return data ? (
     <View>
-      <Image style={styles.image} source={require("../../assets/couch.jpg")} />
+      {/* <Image style={styles.image} source={require("../../assets/couch.jpg")} /> */}
+      <Image style={styles.image} source={{ uri: `${data.image}` }} />
       <View style={[styles.detailsContainer]}>
         <Chip
           title={data.category.label}

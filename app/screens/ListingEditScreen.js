@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { StatusBar } from 'expo-status-bar';
 
 import { getFirestore, addDoc, serverTimestamp, collection } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes, child, getDownloadURL } from "firebase/storage";
 import firebase from '../config/firebase';
 
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
@@ -15,6 +15,7 @@ import FormImagePicker from '../components/forms/FormImagePicker';
 import Screen from '../components/Screen';
 import useLocation from '../hooks/useLocation';
 import colors from '../config/colors';
+import ImagePickerComponent from '../components/ImagePickerComponent';
 
 const db = getFirestore(firebase);
 // Create a root reference
@@ -89,6 +90,7 @@ const categories = [
 function ListingEditScreen({ navigation }) {
     const location = useLocation();
     const { user } = useContext(AuthenticatedUserContext);
+    const [url, setUrl] = React.useState(null);
     // console.log("user: ", user);
 
     const [isLoading, setIsLoading] = React.useState(false);
@@ -97,38 +99,51 @@ function ListingEditScreen({ navigation }) {
     const handleSubmit = async (listing) => {
         setIsLoading(true);
         // select images from listing
-        const images = listing.images.map(image => image);
+        const images = listing.image.map(image => image);
 
-        // upload images to firebase storage
-        const imageUrls = await Promise.all(
-            images.map(async (image) => {
-                const imageBlob = new Blob([image], { type: 'image/jpeg' });
-                let imageName = image.split('/').pop();
-                const imageRef = ref(storage, `images/${imageName}`);
+        images.map(async (image) => {
+            const filename = image.substring(image.lastIndexOf('/') + 1);
 
-                // upload image to firebase storage
-                await uploadBytes(imageRef, imageBlob)
-                    .then(() => {
-                        console.log('image uploaded');
-                    }).catch(error => {
-                        console.log('error uploading image', error);
+            const blob = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function () {
+                    reject(new TypeError("Network request failed"));
+                };
+                xhr.responseType = "blob";
+                xhr.open("GET", image, true);
+                xhr.send(null);
+            });
+            const ref = firebase
+                .storage()
+                .ref()
+                .child(`images/${filename}`);
+
+            const task = ref.put(blob, { contentType: 'image/jpeg' });
+
+            task.on('state_changed',
+                (snapshot) => {
+                    console.log('SNAPSHOT', snapshot.totalBytes)
+                },
+                (err) => {
+                    console.log(err)
+                },
+                () => {
+                    task.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        setUrl(downloadURL);
+                        console.log('DOWNLOAD', downloadURL);
                     });
+                })
+        })
 
-                // get download url
-                const downloadUrl = await getDownloadURL(imageRef)
-                    .then(url => {
-                        console.log('image url: ', url);
-                        return url;
-                    }).catch(error => {
-                        console.log('error getting image url', error);
-                    });
+        // console.log('IMAGE URLS', imageUrls);
 
-                return downloadUrl;
-            }));
         // create listing object
         const newListing = {
             ...listing,
-            images: imageUrls,
+            image: url,
             createdAt: serverTimestamp(),
             userId: user.uid,
             location: location,
@@ -154,14 +169,19 @@ function ListingEditScreen({ navigation }) {
                     price: "",
                     description: "",
                     category: null,
-                    images: [],
+                    image: [],
                 }}
                 onSubmit={(values) => handleSubmit(values)}
                 validationSchema={validationSchema}
             >
                 <FormImagePicker
-                    name="images"
+                    name="image"
                 />
+                {/* <ImagePickerComponent
+                    imageUri={url}
+                    name="image"
+                    onChangeImage={(image) => setUrl(image)}
+                /> */}
                 <AppFormField maxLength={255} name="title" placeholder="Title" />
                 <AppFormField
                     keyboardType="numeric"

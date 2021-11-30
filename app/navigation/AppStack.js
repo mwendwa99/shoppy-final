@@ -2,10 +2,11 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import AppNavigator from './AppNavigator';
-import { MessagesScreen, ListingDetailsScreen, CartScreen, UserListings } from '../screens';
+import { ListingDetailsScreen, CartScreen, UserListings } from '../screens';
 import colors from '../config/colors';
 import { ImageProvider } from '../../context/ImageContext';
 import { CartProvider } from '../../context/CartContext';
+import Icon from '../components/Icon';
 
 
 const Stack = createStackNavigator();
@@ -26,10 +27,31 @@ export default function AppStack() {
                     },
                 }}>
                     <Stack.Screen name='Shoppy' component={AppNavigator} />
-                    <Stack.Screen name='Messages' component={MessagesScreen} />
-                    <Stack.Screen name='Listings' component={ListingDetailsScreen} />
-                    <Stack.Screen name='My Listings' component={UserListings} />
-                    <Stack.Screen name='Cart' component={CartScreen} />
+                    <Stack.Screen
+                        options={{
+                            headerRight: () => (
+                                <Icon name={'bookmark'} backgroundColor={colors.primary} />
+                            ),
+                            headerTitle: 'Item'
+                        }}
+                        name='Listings' component={ListingDetailsScreen} />
+                    <Stack.Screen
+                        options={{
+                            headerTitle: 'My Lists',
+                            headerRight: () => (
+                                <Icon name={'format-list-bulleted'} backgroundColor={colors.primary} />
+                            ),
+                        }}
+                        name='My Listings' component={UserListings} />
+                    <Stack.Screen
+                        options={{
+                            headerTitle: 'Shopping Cart',
+                            headerRight: () => (
+                                <Icon name={'cart'} backgroundColor={colors.primary} />
+                            ),
+                        }}
+
+                        name='Cart' component={CartScreen} />
                 </Stack.Navigator>
             </ImageProvider>
         </CartProvider>

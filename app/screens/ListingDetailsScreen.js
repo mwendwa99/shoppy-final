@@ -27,12 +27,16 @@ function ListingDetailsScreen({ route, navigation }) {
     try {
       const listingRef = doc(db, "listings", listingId);
       const listing = await getDoc(listingRef);
-      setData(listing.data());
+      const dataObject = listing.data();
+      dataObject.id = listing.id;
+      setData(dataObject);
     } catch (err) {
       console.log(err);
     }
     setLoading(false);
   };
+
+  console.log("data", data);
 
   // useEffect to get listing data
   useEffect(() => {

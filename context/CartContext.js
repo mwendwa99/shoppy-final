@@ -10,8 +10,18 @@ const CartProvider = ({ children }) => {
         setCartItems([...cartItems, item]);
     };
 
+    const removeFromCart = (item) => {
+        setCartItems(cartItems.filter(cartItem => cartItem.id !== item.id));
+        console.log("item deleted!")
+    };
+
+    // get total price of items in cart
+    const getTotalPrice = () => {
+        return cartItems.reduce((acc, item) => acc + item.price, 0);
+    };
+
     return (
-        <CartContext.Provider value={{ cartItems, addToCart }}>
+        <CartContext.Provider value={{ cartItems, removeFromCart, getTotalPrice, addToCart }}>
             {children}
         </CartContext.Provider>
     );

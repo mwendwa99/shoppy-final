@@ -1,29 +1,58 @@
-import client from "./client";
+import React, { useState, createContext, useContext } from 'react';
+import { getFirestore, query, collection, getDocs } from 'firebase/firestore';
+import { ref, getStorage, getDownloadURL } from "firebase/storage";
 
-const endpoint = '/listings';
+import firebase from '../config/firebase';
 
-const getListings = () => client.get(endpoint);
-const addListing = listing => {
-    const data = new FormData();
-    data.append('title', listing.title);
-    data.append('price', listing.price);
-    data.append('categoryId', listing.category.value);
-    data.append('description', listing.description);
+const db = getFirestore(firebase);
+const dbListings = query(collection(db, "listings"));
+const storage = getStorage(firebase);
 
-    listing.images.forEach((image, index) =>
-        data.append('images', {
-            name: 'image' + index,
-            type: 'image/jpeg',
-            uri: image
-        }));
+const ListingsContext = createContext();
 
-    if (listing.location)
-        data.append('location', JSON.stringify(listing.location));
+const ListingsProvider = (props) => {
+    const [data, setData] = useState([]);
 
-    return client.post(endpoint, data);
+    const fetchData = async () => {
+        try {
+            const items = await getDocs(dbListings);
+
+            // get image url from firebase storage
+            const imageUrls = await Promise.all(
+                items.docs.map(async (item) => {
+                    // const imageRef = storage.ref(item.data().image);
+                    const imageRef = ref(storage, `images/${item.data().image}`);
+                    // const url = await imageRef.getDownloadURL();
+                    getDownloadURL(imageRef).then(url => {
+                        item.data().image = url;
+                    });
+                    return item.data().image;
+                })
+            );
+            // set items
+            console.log('IMAGE URLS', imageUrls);
+            const values = items.docs.map((listing, index) => ({
+                ...listing.data(),
+                id: listing.id,
+                image: imageUrls[index],
+            }))
+            setData(values);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    return (
+        <ListingsContext.Provider value={{ data, fetchData }}>
+            {props.children}
+        </ListingsContext.Provider>
+    )
 }
 
-export default {
-    addListing,
-    getListings,
+const useData = () => {
+    const context = useContext(ListingsContext);
+    return context;
 }
+
+export { ListingsProvider, useData };

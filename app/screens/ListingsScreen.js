@@ -11,6 +11,7 @@ import Card from "../components/Card";
 import colors from "../config/colors";
 import { ActivityIndicator } from "react-native-paper";
 import AppText from "../components/AppText";
+import { useData } from "../api/listings";
 
 const db = getFirestore(firebase);
 const dbListings = query(collection(db, "listings"));
@@ -56,63 +57,21 @@ const listings = [
 ];
 
 function ListingsScreen({ navigation }) {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { data, fetchData } = useData();
 
-  // useEffect to get data from firestore
-  useEffect(() => {
-    // get data and cleanuo
-    getData();
+  useEffect(async () => {
+    setLoading(true);
+    await fetchData();
+    setLoading(false);
   }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
-    getData();
+    fetchData();
   };
 
-  // function to get data from firestore
-  const getData = async () => {
-    setLoading(true)
-    try {
-      const items = await getDocs(dbListings);
-      // image ref to firebase storage
-      // const imageRef = firebase.storage().ref("images");
-      // const imageRef = firebase.storage().ref();
-
-      // get image url from firebase storage
-      const imageUrls = await Promise.all(
-        items.docs.map(async (item) => {
-          // const imageRef = storage.ref(item.data().image);
-          const imageRef = ref(storage, `images/${item.data().image}`);
-          // const url = await imageRef.getDownloadURL();
-          getDownloadURL(imageRef).then(url => {
-            item.data().image = url;
-          });
-          return item.data().image;
-        })
-      );
-      // const url = await imageRef.child().getDownloadURL();
-      // const url = await imageRef.child(item.image).getDownloadURL();
-      // const url = await imageRef.child('images').getDownloadURL();
-      // const url = await ref(storage, item.image).getDownloadURL();
-      //     return url;
-      //   })
-      // );
-      // set items
-      console.log('IMAGE URLS', imageUrls);
-      const values = items.docs.map((listing, index) => ({
-        ...listing.data(),
-        id: listing.id,
-        image: imageUrls[index],
-      }))
-      setData(values);
-    } catch (error) {
-      console.log(error);
-    }
-    setLoading(false);
-    setRefreshing(false);
-  };
 
   return data ? (
     <Screen

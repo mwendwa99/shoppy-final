@@ -7,14 +7,16 @@ import colors from '../config/colors';
 import { ImageProvider } from '../../context/ImageContext';
 import { CartProvider } from '../../context/CartContext';
 import Icon from '../components/Icon';
+import { ListingsProvider } from '../api/listings';
 
 
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
-        <CartProvider>
-            <ImageProvider>
+        <ListingsProvider>
+            <CartProvider>
+                {/* <ImageProvider> */}
                 <Stack.Navigator screenOptions={{
                     headerShown: true,
                     headerStyle: {
@@ -53,7 +55,8 @@ export default function AppStack() {
 
                         name='Cart' component={CartScreen} />
                 </Stack.Navigator>
-            </ImageProvider>
-        </CartProvider>
+                {/* </ImageProvider> */}
+            </CartProvider>
+        </ListingsProvider>
     );
 };

@@ -70,11 +70,13 @@ function ListingsScreen({ navigation }) {
   const onRefresh = () => {
     setRefreshing(true);
     fetchData();
+    setRefreshing(false);
   };
 
 
   return data ? (
     <Screen
+      // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       style={styles.screen}>
       <StatusBar style='dark-content' />
       <FlatList
@@ -105,8 +107,8 @@ function ListingsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   screen: {
-    marginTop: 10,
-    paddingHorizontal: 10,
+    marginTop: 5,
+    paddingHorizontal: 5,
     backgroundColor: colors.light,
   },
 });

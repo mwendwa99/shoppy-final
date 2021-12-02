@@ -141,21 +141,22 @@ function ListingEditScreen({ navigation }) {
 
         console.log('IMAGE URLS', url);
 
-        // create listing object
-        const newListing = {
-            ...listing,
-            image: url,
-            createdAt: serverTimestamp(),
-            userId: user.uid,
-            location: location,
-        };
+        // create listing object if url is not null
+        if (url) {
+            const newListing = {
+                ...listing,
+                image: url,
+                userId: user.uid,
+                createdAt: serverTimestamp(),
+                location: location,
+            };
+            // add listing to firestore
+            await addDoc(collection(db, 'listings'), newListing);
+            // navigation.navigate('Listing', { id: result.id });
+            setIsLoading(false);
+            navigation.navigate('Home');
 
-        // add listing to firestore
-        await addDoc(collection(db, 'listings'), newListing);
-        // navigation.navigate('Listing', { id: result.id });
-        setIsLoading(false);
-        navigation.navigate('Home');
-
+        }
     };
 
 

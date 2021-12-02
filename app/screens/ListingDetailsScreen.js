@@ -36,7 +36,7 @@ function ListingDetailsScreen({ route, navigation }) {
     setLoading(false);
   };
 
-  console.log("data", data);
+  // console.log("data", data);
 
   // useEffect to get listing data
   useEffect(() => {

@@ -20,8 +20,8 @@ const ListingsProvider = ({ children }) => {
             // get image url from firebase storage
             const imageUrls = await Promise.all(
                 items.docs.map(async (item) => {
-                    // const imageRef = storage.ref(item.data().image);
                     const imageRef = ref(storage, `images/${item.data().image}`);
+                    // const imageRef = firebase.storage().ref(`images`).child(item.data().image);
                     // const url = await imageRef.getDownloadURL();
                     getDownloadURL(imageRef).then(url => {
                         item.data().image = url;

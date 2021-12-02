@@ -10,7 +10,7 @@ const storage = getStorage(firebase);
 
 const ListingsContext = createContext();
 
-const ListingsProvider = (props) => {
+const ListingsProvider = ({ children }) => {
     const [data, setData] = useState([]);
 
     const fetchData = async () => {
@@ -30,7 +30,7 @@ const ListingsProvider = (props) => {
                 })
             );
             // set items
-            console.log('IMAGE URLS', imageUrls);
+            // console.log('IMAGE URLS', imageUrls);
             const values = items.docs.map((listing, index) => ({
                 ...listing.data(),
                 id: listing.id,
@@ -45,7 +45,7 @@ const ListingsProvider = (props) => {
 
     return (
         <ListingsContext.Provider value={{ data, fetchData }}>
-            {props.children}
+            {children}
         </ListingsContext.Provider>
     )
 }

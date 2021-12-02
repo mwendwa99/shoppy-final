@@ -8,7 +8,7 @@ import { getStorage, ref, uploadBytes, child, getDownloadURL } from "firebase/st
 import firebase from '../config/firebase';
 
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
-import { useImage } from '../../context/ImageContext';
+// import { useImage } from '../../context/ImageContext';
 import { AppForm, AppFormField, SubmitButton, AppFormPicker } from '../components/forms';
 import CategoryPickerItem from '../components/CategoryPickerItem';
 import FormImagePicker from '../components/forms/FormImagePicker';
@@ -116,12 +116,13 @@ function ListingEditScreen({ navigation }) {
                 xhr.open("GET", image, true);
                 xhr.send(null);
             });
-            const ref = firebase
+            const storageRef = firebase
                 .storage()
                 .ref()
                 .child(`images/${filename}`);
 
-            const task = ref.put(blob, { contentType: 'image/jpeg' });
+
+            const task = storageRef.put(blob, { contentType: 'image/jpeg' });
 
             task.on('state_changed',
                 (snapshot) => {
@@ -138,7 +139,7 @@ function ListingEditScreen({ navigation }) {
                 })
         })
 
-        // console.log('IMAGE URLS', imageUrls);
+        console.log('IMAGE URLS', url);
 
         // create listing object
         const newListing = {

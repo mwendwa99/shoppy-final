@@ -77,13 +77,13 @@ function ListItem({
           }
           {price && <AppText style={styles.price}>Kes {price}</AppText>}
           {deleteItem ? (
-            <TouchableOpacity style={styles.delete} >
+            <View style={styles.delete} >
               <Icon
                 name="trash-can-outline"
                 backgroundColor={colors.danger}
                 size={30}
               />
-            </TouchableOpacity>
+            </View>
           ) : null}
         </View>
       </TouchableHighlight>

@@ -51,7 +51,6 @@ const UserListings = () => {
             { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
             {
                 text: 'OK', onPress: async () => {
-                    console.log("id", id);
                     // delete listing
                     const listingRef = doc(db, 'listings', id);
                     await deleteDoc(listingRef);
@@ -73,7 +72,7 @@ const UserListings = () => {
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
                 extraData={listings}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />}
                 keyExtractor={(item) => item.id}
                 ItemSeparatorComponent={ListItemSeparator}
                 renderItem={({ item, index }) => (

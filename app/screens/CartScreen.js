@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, FlatList, StyleSheet, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, View, RefreshControl } from 'react-native';
 import { Button } from 'react-native-elements';
 
 import { useCart } from '../../context/CartContext';
@@ -10,32 +10,46 @@ import ListItemSeparator from '../components/ListItemSeparator';
 import colors from '../config/colors';
 
 const CartScreen = ({ navigation }) => {
-    const { cartItems, removeFromCart, getTotalPrice } = useCart();
-    const [cart, setCart] = useState([]);
+    const { cartItems, setCartItems, removeFromCart, getTotalPrice } = useCart();
     const [total, setTotal] = useState(0);
+    const [refreshing, setRefreshing] = useState(false);
+
+
+    // refresh the cart
+    const refreshCart = () => {
+        setRefreshing(true);
+        setCartItems(cartItems);
+        setTotal(getTotalPrice());
+        setRefreshing(false);
+    }
 
     useEffect(() => {
-        setCart(cartItems);
+        setCartItems(cartItems);
         setTotal(getTotalPrice());
-    }, [cart]);
+    }, []);
 
     // delete function
     const handleDelete = (item) => {
         Alert.alert(
-            'Delete Item',
-            'Are you sure you want to delete this item?',
+            'Are you sure?',
+            'Do you really want to remove the item from the cart?',
             [
                 {
                     text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                 },
-                { text: 'OK', onPress: () => removeFromCart(item) },
+                {
+                    text: 'Remove',
+                    onPress: () => {
+                        removeFromCart(item.id);
+                    },
+                },
             ],
             { cancelable: true },
         );
-        // navigate to home
-    }
+        // refresh after delete
+        refreshCart();
+    };
 
     // purchase function
     const purchase = () => {
@@ -55,20 +69,21 @@ const CartScreen = ({ navigation }) => {
         );
     }
 
-    return cart ? (
+    return cartItems.length > 0 ? (
         <View style={styles.container}>
             <FlatList
-                data={cart}
+                data={cartItems}
                 keyExtractor={item => item.id}
                 ItemSeparatorComponent={ListItemSeparator}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={refreshCart} />
+                }
                 renderItem={({ item }) =>
                     <ListItem
                         IconComponent={
                             <Icon name={item.category.icon} backgroundColor={item.category.backgroundColor} size={50} />
                         }
                         title={item.title}
-                        // subTitle={item.category.label}
-                        // subTitle={item.description}
                         price={item.price}
                         onPress={() => handleDelete(item)}
                         deleteItem

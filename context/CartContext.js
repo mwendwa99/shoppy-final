@@ -15,9 +15,8 @@ const CartProvider = ({ children }) => {
 
     };
 
-    const removeFromCart = (item) => {
-        setCartItems(cartItems.filter(cartItem => cartItem.id !== item.id));
-        console.log("item deleted!")
+    const removeFromCart = (id) => {
+        setCartItems(cartItems.filter(cartItem => cartItem.id !== id));
     };
 
     // get total price of items in cart
@@ -26,7 +25,7 @@ const CartProvider = ({ children }) => {
     };
 
     return (
-        <CartContext.Provider value={{ cartItems, removeFromCart, getTotalPrice, addToCart }}>
+        <CartContext.Provider value={{ cartItems, setCartItems, removeFromCart, getTotalPrice, addToCart }}>
             {children}
         </CartContext.Provider>
     );

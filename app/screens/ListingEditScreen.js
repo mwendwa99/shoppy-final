@@ -19,7 +19,7 @@ import ImagePickerComponent from '../components/ImagePickerComponent';
 
 const db = getFirestore(firebase);
 // Create a root reference
-const storage = getStorage();
+const storage = getStorage(firebase);
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),

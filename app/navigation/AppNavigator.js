@@ -4,11 +4,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { AccountScreen, ListingEditScreen, ListingsScreen } from '../screens';
 import colors from '../config/colors';
+import { ListingsProvider } from '../api/listings';
+import { CartProvider } from '../../context/CartContext';
 
 const Tab = createMaterialBottomTabNavigator();
 
 export default function App() {
     return (
+        // <ListingsProvider>
+        // <CartProvider>
         <Tab.Navigator
             barStyle={{ backgroundColor: colors.primary }}
             activeColor={colors.white}
@@ -36,5 +40,7 @@ export default function App() {
                 }}
                 name="Account" component={AccountScreen} />
         </Tab.Navigator>
+        // </CartProvider>
+        // </ListingsProvider>
     );
 }

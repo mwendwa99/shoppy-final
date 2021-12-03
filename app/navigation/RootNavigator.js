@@ -7,6 +7,8 @@ import firebase from '../config/firebase';
 import { AuthenticatedUserContext } from './AuthenticatedUserProvider';
 import AuthStack from './AuthStack';
 import AppStack from './AppStack';
+import { ListingsProvider } from "../api/listings";
+import { CartProvider } from "../../context/CartContext";
 
 const auth = firebase.auth();
 
@@ -40,7 +42,13 @@ export default function RootNavigator() {
     return (
         <NavigationContainer>
             {
-                user ? <AppStack /> : <AuthStack />
+                user ?
+                    // <ListingsProvider>
+                    // <CartProvider>
+                    <AppStack />
+                    // </CartProvider>
+                    // </ListingsProvider>
+                    : <AuthStack />
             }
         </NavigationContainer>
     );

@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, createContext, useContext, useEffect } from 'react';
 import { getFirestore, query, collection, getDocs } from 'firebase/firestore';
 import { ref, getStorage, getDownloadURL } from "firebase/storage";
 
@@ -16,7 +16,6 @@ const ListingsProvider = ({ children }) => {
     const fetchData = async () => {
         try {
             const items = await getDocs(dbListings);
-
             // get image url from firebase storage
             const imageUrls = await Promise.all(
                 items.docs.map(async (item) => {

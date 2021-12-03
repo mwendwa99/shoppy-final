@@ -76,15 +76,15 @@ function ListItem({
             ) : null
           }
           {price && <AppText style={styles.price}>Kes {price}</AppText>}
-          {deleteItem && (
-            <TouchableOpacity style={styles.delete} onPress={deleteItem}>
+          {deleteItem ? (
+            <TouchableOpacity style={styles.delete} >
               <Icon
                 name="trash-can-outline"
                 backgroundColor={colors.danger}
                 size={30}
               />
             </TouchableOpacity>
-          )}
+          ) : null}
         </View>
       </TouchableHighlight>
     </Swipeable>
@@ -98,12 +98,8 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   delete: {
-    backgroundColor: colors.danger,
-    padding: 10,
-    borderRadius: 50,
+    padding: 5,
     marginLeft: "auto",
-    marginRight: 10,
-    elevation: 1,
   },
   price: {
     color: colors.medium,

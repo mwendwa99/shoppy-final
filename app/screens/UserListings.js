@@ -1,7 +1,7 @@
 // profile screen component
 import React, { useContext, useState, useEffect } from 'react'
-import { FlatList, StyleSheet, View, RefreshControl } from 'react-native';
-import { getFirestore, getDocs, where, collection, query } from 'firebase/firestore';
+import { FlatList, StyleSheet, View, RefreshControl, Alert } from 'react-native';
+import { getFirestore, getDocs, doc, deleteDoc, where, collection, query } from 'firebase/firestore';
 import { ActivityIndicator } from 'react-native-paper';
 
 import firebase from '../config/firebase';
@@ -36,10 +36,6 @@ const UserListings = () => {
     const getUserListings = async () => {
         setLoading(true);
         const querySnapshot = await getDocs(q);
-        // querySnapshot.forEach((doc) => {
-        //     // doc.data() is never undefined for query doc snapshots
-        //     setListings(prevListings => [...prevListings, doc.data(), doc.data()]);
-        // });
         const items = querySnapshot.docs.map(doc => ({
             ...doc.data(),
             id: doc.id,
@@ -47,6 +43,26 @@ const UserListings = () => {
         setListings(items);
         setLoading(false);
     }
+
+    // function to delete a listing
+    const deleteListing = async (id) => {
+        // alert delete
+        Alert.alert('Are you sure you want to delete this listing?', '', [
+            { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+            {
+                text: 'OK', onPress: async () => {
+                    console.log("id", id);
+                    // delete listing
+                    const listingRef = doc(db, 'listings', id);
+                    await deleteDoc(listingRef);
+                    // update listings
+                    getUserListings();
+                    console.log("deleted");
+                }
+            },
+        ], { cancelable: true });
+    }
+
 
     return !loading ? (
         <View style={styles.container}>
@@ -67,7 +83,10 @@ const UserListings = () => {
                         description={item.description}
                         subTitle={`Kes: ${item.price}`}
                         Category={item.category}
+                        deleteItem
+                        onPress={() => deleteListing(item.id)}
                     />
+
                 )}
             />
         </View>

@@ -57,13 +57,13 @@ const listings = [
 ];
 
 function ListingsScreen({ navigation }) {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { data, fetchData } = useData();
 
-  useEffect(async () => {
+  useEffect(() => {
     setLoading(true);
-    await fetchData();
+    fetchData();
     setLoading(false);
   }, []);
 
@@ -76,7 +76,6 @@ function ListingsScreen({ navigation }) {
 
   return data ? (
     <Screen
-      // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       style={styles.screen}>
       <StatusBar style='dark-content' />
       <FlatList
@@ -101,7 +100,9 @@ function ListingsScreen({ navigation }) {
       />
     </Screen>
   ) : (
-    <ActivityIndicator animating={loading} color={colors.primary} size="large" />
+    <View style={styles.screen}>
+      <ActivityIndicator animating={loading} color={colors.primary} size="large" />
+    </View>
   )
 }
 

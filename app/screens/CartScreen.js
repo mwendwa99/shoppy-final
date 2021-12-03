@@ -56,12 +56,13 @@ const CartScreen = ({ navigation }) => {
         // alert item bought at price
         Alert.alert(
             'Item Bought',
-            'You bought ' + cart.length + ' items for Kes ' + total,
+            'You bought ' + cartItems.length + ' items for Kes ' + total,
             [
                 {
                     text: 'OK',
                     onPress: () => {
-                        navigation.navigate('Home');
+                        setCartItems([]);
+                        // navigation.navigate('Home');
                     }
                 },
             ],

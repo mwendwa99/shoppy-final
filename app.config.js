@@ -1,6 +1,9 @@
 import 'dotenv/config';
 
 export default {
+  android: {
+    package: "com.mwendwa99.shoppyfinal"
+  },
   expo: {
     name: "shoppy-final",
     slug: "shoppy-final",

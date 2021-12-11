@@ -1,11 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
+import colors from '../config/colors';
 
 const Button = ({
     title,
     backgroundColor = '#000',
     titleColor = '#fff',
-    titleSize = 14,
+    titleSize = 12,
     onPress,
     width = '100%',
     containerStyle
@@ -45,15 +46,28 @@ const Button = ({
 }
 const styles = StyleSheet.create({
     text: {
-        fontWeight: '600'
+        color: colors.light,
+        fontSize: 18,
+        textTransform: "uppercase",
+        fontWeight: "bold",
     },
     base: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 42,
-        borderRadius: 4,
-        paddingHorizontal: 12
-    }
+        backgroundColor: colors.secondary,
+        borderRadius: 25,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 15,
+        width: "100%",
+        marginVertical: 10,
+        elevation: 1.5,
+    },
+    // base: {
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    //     minHeight: 42,
+    //     borderRadius: 4,
+    //     paddingHorizontal: 12
+    // }
 })
 
 export default Button

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import defaultStyles from '../config/styles';
 
 const InputField = ({
     leftIcon,
@@ -43,22 +44,21 @@ const InputField = ({
 
 const styles = StyleSheet.create({
     container: {
-        borderRadius: 4,
+        backgroundColor: defaultStyles.colors.light,
+        borderRadius: 25,
         flexDirection: 'row',
-        padding: 12
+        padding: 15,
+        marginVertical: 10,
+        alignItems: 'center'
     },
     leftIcon: {
-        marginRight: 10
-    },
-    input: {
-        flex: 1,
-        width: '100%',
-        fontSize: 18
+        marginRight: 10,
+        color: defaultStyles.colors.medium,
     },
     rightIcon: {
-        alignSelf: 'center',
-        marginLeft: 10
-    }
+        marginRight: 10,
+        color: defaultStyles.colors.medium,
+    },
 });
 
 export default InputField;

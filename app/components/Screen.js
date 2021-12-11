@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 function Screen({ children, style }) {
   return (
     <View style={[styles.screen, style]}>
-      <View style={style}>{children}</View>
+      <View style={[styles.view, style]}>{children}</View>
     </View>
   );
 }
@@ -12,6 +12,9 @@ function Screen({ children, style }) {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+  },
+  view: {
+    flex: 1
   },
 });
 

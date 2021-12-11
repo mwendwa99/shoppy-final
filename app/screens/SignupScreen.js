@@ -65,12 +65,10 @@ export default function SignupScreen({ navigation }) {
             <ActivityIndicator animating={isloading} color={colors.primary} size='large' />
             <InputField
                 inputStyle={{
-                    fontSize: 14,
+                    flex: 1,
                 }}
                 containerStyle={{
-                    backgroundColor: colors.light,
-                    marginBottom: 20,
-                    borderRadius: 20,
+                    width: '100%',
                 }}
                 leftIcon='account'
                 placeholder='Enter username'
@@ -82,12 +80,10 @@ export default function SignupScreen({ navigation }) {
             />
             <InputField
                 inputStyle={{
-                    fontSize: 14
+                    flex: 1,
                 }}
                 containerStyle={{
-                    backgroundColor: colors.light,
-                    marginBottom: 20,
-                    borderRadius: 20,
+                    width: '100%',
                 }}
                 leftIcon='email'
                 placeholder='Enter email'
@@ -99,12 +95,10 @@ export default function SignupScreen({ navigation }) {
             />
             <InputField
                 inputStyle={{
-                    fontSize: 14
+                    flex: 1,
                 }}
                 containerStyle={{
-                    backgroundColor: colors.light,
-                    marginBottom: 20,
-                    borderRadius: 20,
+                    width: '100%',
                 }}
                 leftIcon='lock'
                 placeholder='Enter password'
@@ -120,26 +114,19 @@ export default function SignupScreen({ navigation }) {
             {signupError ? <ErrorMessage error={signupError} visible={true} /> : null}
             <Button
                 onPress={onHandleSignup}
+                backgroundColor={colors.primary}
                 title={
                     isloading ? 'Signing up...' : 'Sign up'
                 }
                 tileColor='#fff'
-                titleSize={20}
-                containerStyle={{
-                    marginBottom: 24,
-                    backgroundColor: colors.primary,
-                    borderRadius: 20,
-                }}
+                titleSize={12}
             />
             <Button
                 onPress={() => navigation.navigate('Login')}
+                backgroundColor={colors.secondary}
                 title='Login'
                 tileColor='#fff'
-                titleSize={20}
-                containerStyle={{
-                    backgroundColor: colors.secondary,
-                    borderRadius: 20,
-                }}
+                titleSize={12}
             />
         </ImageBackground>
     );
@@ -161,10 +148,10 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     title: {
-        fontSize: 26,
-        fontWeight: '700',
+        fontSize: 24,
+        fontWeight: '600',
         color: colors.white,
         alignSelf: 'center',
-        paddingBottom: 24
+        paddingBottom: 20
     }
 });

@@ -1,14 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { useState } from 'react';
-import { StyleSheet, Text, Image, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, Image, Dimensions, ActivityIndicator } from 'react-native';
+import * as Yup from 'yup';
 
 import { Button, InputField, ErrorMessage } from '../components';
 import firebase from '../config/firebase';
 import colors from '../config/colors';
 import ImageBackground from 'react-native/Libraries/Image/ImageBackground';
+import { AppForm, AppFormField, AppButton, SubmitButton } from '../components';
 
 const auth = firebase.auth();
+const validationSchema = Yup.object().shape({
+    email: Yup.string().required().email().label("Email"),
+    password: Yup.string().required().min(4).label("Password")
+})
 
 export default function LoginScreen({ navigation }) {
     const [isloading, setIsloading] = useState(false);
@@ -52,12 +57,10 @@ export default function LoginScreen({ navigation }) {
             <ActivityIndicator animating={isloading} color={colors.primary} size='large' />
             <InputField
                 inputStyle={{
-                    fontSize: 14
+                    flex: 1,
                 }}
                 containerStyle={{
-                    backgroundColor: colors.light,
-                    marginBottom: 20,
-                    borderRadius: 20,
+                    width: '100%',
                 }}
                 leftIcon='email'
                 placeholder='Enter email'
@@ -70,12 +73,10 @@ export default function LoginScreen({ navigation }) {
             />
             <InputField
                 inputStyle={{
-                    fontSize: 14
+                    flex: 1,
                 }}
                 containerStyle={{
-                    backgroundColor: colors.light,
-                    marginBottom: 20,
-                    borderRadius: 20,
+                    width: '100%',
                 }}
                 leftIcon='lock'
                 placeholder='Enter password'
@@ -96,21 +97,11 @@ export default function LoginScreen({ navigation }) {
                     isloading ? 'Logging in...' : 'Login'
                 }
                 tileColor='#fff'
-                titleSize={20}
-                containerStyle={{
-                    marginBottom: 15,
-                    borderRadius: 20,
-                }}
             />
             <Button
                 onPress={() => navigation.navigate('Signup')}
                 title='Signup'
-                titleSize={20}
                 backgroundColor={colors.secondary}
-                containerStyle={{
-                    marginBottom: 24,
-                    borderRadius: 20,
-                }}
             />
         </ImageBackground>
     );
@@ -123,6 +114,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgba(0,0,0,9)',
         paddingHorizontal: 20,
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        resizeMode: 'stretch',
     },
     logo: {
         width: 80,
@@ -132,10 +126,10 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     title: {
-        fontSize: 26,
-        fontWeight: '700',
+        fontSize: 24,
+        fontWeight: '600',
         color: colors.white,
         alignSelf: 'center',
-        paddingBottom: 24
+        paddingBottom: 20
     }
 });

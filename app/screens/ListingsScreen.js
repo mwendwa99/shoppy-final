@@ -22,37 +22,37 @@ const listings = [
     id: 0,
     title: "grey sweaters",
     price: 1000,
-    image: require("../../assets/sweater.jpg"),
+    // image: require("../../assets/sweater.jpg"),
   },
   {
     id: 1,
     title: "black leather jacket for sale",
     price: 1500,
-    image: require("../../assets/jacket.jpg"),
+    // image: require("../../assets/jacket.jpg"),
   },
   {
     id: 2,
     title: "Couch in great condition",
     price: 40000,
-    image: require("../../assets/couch.jpg"),
+    // image: require("../../assets/couch.jpg"),
   },
   {
     id: 4,
     title: "Nike sneakers for sale",
     price: 5000,
-    image: require("../../assets/shoes.jpg"),
+    // image: require("../../assets/shoes.jpg"),
   },
   {
     id: 5,
     title: "Black office chair",
     price: 3000,
-    image: require("../../assets/chair.jpg"),
+    // image: require("../../assets/chair.jpg"),
   },
   {
     id: 6,
     title: "King Size bed",
     price: 35000,
-    image: require("../../assets/bed.jpg"),
+    // image: require("../../assets/bed.jpg"),
   },
 ];
 

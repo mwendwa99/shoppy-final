@@ -9,11 +9,17 @@ import ListItem from '../components/ListItem';
 import ListItemSeparator from '../components/ListItemSeparator';
 import colors from '../config/colors';
 
+import { firebase } from '../config/firebase';
+import { getFirestore, getDocs, doc, deleteDoc, where, collection, query } from 'firebase/firestore';
+
+const db = getFirestore(firebase);
+
 const CartScreen = ({ navigation }) => {
     const { cartItems, setCartItems, removeFromCart, getTotalPrice } = useCart();
     const [total, setTotal] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
 
+    // console.log(cartItems);
 
     // refresh the cart
     const refreshCart = () => {
@@ -61,6 +67,10 @@ const CartScreen = ({ navigation }) => {
                 {
                     text: 'OK',
                     onPress: () => {
+                        // delete item from firebase
+                        cartItems.forEach(async item => {
+                            await deleteDoc(doc(db, 'listings', item.id));
+                        });
                         setCartItems([]);
                         // navigation.navigate('Home');
                     }

@@ -1,9 +1,6 @@
 import 'dotenv/config';
 
 export default {
-  android: {
-    package: "com.mwendwa99.shoppyfinal"
-  },
   expo: {
     name: "shoppy-final",
     slug: "shoppy-final",
@@ -25,6 +22,7 @@ export default {
       supportsTablet: true
     },
     android: {
+      package: "com.mwendwa99.shoppyfinal",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#FFFFFF"

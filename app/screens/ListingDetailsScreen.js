@@ -103,7 +103,6 @@ function ListingDetailsScreen({ route, navigation }) {
         />
         <AppText style={styles.title}>
           name: {data.title}
-          token: {expoPushToken}
         </AppText>
         <AppText style={[styles.price]}>
           price: Kes {data.price}

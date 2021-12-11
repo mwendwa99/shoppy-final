@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Alert, FlatList, StyleSheet, View, RefreshControl } from 'react-native';
 import { Button } from 'react-native-elements';
+
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
 
 import { useCart } from '../../context/CartContext';
 import AppText from '../components/AppText';
@@ -10,16 +13,51 @@ import ListItemSeparator from '../components/ListItemSeparator';
 import colors from '../config/colors';
 
 import { firebase } from '../config/firebase';
-import { getFirestore, getDocs, doc, deleteDoc, where, collection, query } from 'firebase/firestore';
+import { getFirestore, doc, deleteDoc } from 'firebase/firestore';
 
 const db = getFirestore(firebase);
+// notification params
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+    }),
+});
 
-const CartScreen = ({ navigation }) => {
+const CartScreen = () => {
     const { cartItems, setCartItems, removeFromCart, getTotalPrice } = useCart();
     const [total, setTotal] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
 
-    // console.log(cartItems);
+    // notification variables
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
+
+    useEffect(() => {
+        setCartItems(cartItems);
+        setTotal(getTotalPrice());
+
+        // notification handler
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+        // This listener is fired whenever a notification is received while the app is foregrounded
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+        };
+    }, []);
 
     // refresh the cart
     const refreshCart = () => {
@@ -28,11 +66,6 @@ const CartScreen = ({ navigation }) => {
         setTotal(getTotalPrice());
         setRefreshing(false);
     }
-
-    useEffect(() => {
-        setCartItems(cartItems);
-        setTotal(getTotalPrice());
-    }, []);
 
     // delete function
     const handleDelete = (item) => {
@@ -80,6 +113,16 @@ const CartScreen = ({ navigation }) => {
         );
     }
 
+    // handle checkout
+    const handleCheckout = () => Alert.alert('Checkout', 'Are you sure you want to checkout?', [
+        {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+        },
+        { text: 'OK', onPress: () => purchase() },
+    ], { cancelable: true })
+
     return cartItems.length > 0 ? (
         <View style={styles.container}>
             <FlatList
@@ -106,14 +149,10 @@ const CartScreen = ({ navigation }) => {
                 <AppText style={styles.totalText}>Total: {total}</AppText>
                 <Button
                     title="Checkout"
-                    onPress={() => Alert.alert('Checkout', 'Are you sure you want to checkout?', [
-                        {
-                            text: 'Cancel',
-                            onPress: () => console.log('Cancel Pressed'),
-                            style: 'cancel',
-                        },
-                        { text: 'OK', onPress: () => purchase() },
-                    ], { cancelable: true })}
+                    onPress={async () => {
+                        handleCheckout();
+                        await sendPushNotification(expoPushToken, cartItems.title, cartItems.price);
+                    }}
                     buttonStyle={styles.button}
                 />
             </View>
@@ -199,3 +238,55 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
     }
 });
+
+
+// Can use this function below, OR use Expo's Push Notification Tool-> https://expo.dev/notifications
+async function sendPushNotification(expoPushToken, title, price) {
+    const message = {
+        to: expoPushToken,
+        sound: 'default',
+        title: 'Item purchased!',
+        body: 'You bought ' + title + ' for ' + price,
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+    });
+}
+
+async function registerForPushNotificationsAsync() {
+    let token;
+    if (Constants.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+        console.log(token);
+    } else {
+        alert('Must use physical device for Push Notifications');
+    }
+
+    if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+
+    return token;
+}

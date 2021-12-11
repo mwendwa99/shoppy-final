@@ -1,29 +1,67 @@
-import React, { useEffect, useState } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { View, Image, StyleSheet, Platform } from "react-native";
 import { ActivityIndicator } from 'react-native-paper';
-import { Chip, Button } from 'react-native-elements'
-import AppText from "../components/AppText";
-import { getFirestore, getDoc, doc } from "firebase/firestore";
+import { Chip, Button } from 'react-native-elements';
 
-import ListItem from "../components/ListItem";
-import colors from "../config/colors";
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
+
+import { getFirestore, getDoc, doc } from "firebase/firestore";
 import firebase from "../config/firebase";
+
+import AppText from "../components/AppText";
+import colors from "../config/colors";
 import { useCart } from "../../context/CartContext";
 
 const db = getFirestore(firebase);
+// notification params
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 function ListingDetailsScreen({ route, navigation }) {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
+
+  // notification variables
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   // get id from route
   const listingId = route.params.id;
-  // console.log("listing id", listingId);
+
+  // useEffect to get listing data
+  useEffect(() => {
+    getListing();
+
+    // notification handler
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+
+  }, []);
 
   // function to get listing from firestore
   const getListing = async () => {
-    setLoading(true);
     try {
       const listingRef = doc(db, "listings", listingId);
       const listing = await getDoc(listingRef);
@@ -33,15 +71,8 @@ function ListingDetailsScreen({ route, navigation }) {
     } catch (err) {
       console.log(err);
     }
-    setLoading(false);
   };
 
-  // console.log("data", data);
-
-  // useEffect to get listing data
-  useEffect(() => {
-    getListing();
-  }, []);
 
   // function to add listing to cart
   const addToCartHandler = () => {
@@ -52,7 +83,6 @@ function ListingDetailsScreen({ route, navigation }) {
 
   return data ? (
     <View>
-      {/* <Image style={styles.image} source={require("../../assets/couch.jpg")} /> */}
       <Image style={styles.image} source={{ uri: `${data.image}` }} />
       <View style={[styles.detailsContainer]}>
         <Chip
@@ -73,6 +103,7 @@ function ListingDetailsScreen({ route, navigation }) {
         />
         <AppText style={styles.title}>
           name: {data.title}
+          token: {expoPushToken}
         </AppText>
         <AppText style={[styles.price]}>
           price: Kes {data.price}
@@ -92,7 +123,10 @@ function ListingDetailsScreen({ route, navigation }) {
               color: colors.primary,
               size: 20,
             }}
-            onPress={() => addToCartHandler()}
+            onPress={async () => {
+              await sendPushNotification(expoPushToken, data.title, data.price);
+              addToCartHandler();
+            }}
           />
           <Button
             containerStyle={styles.button}
@@ -163,3 +197,54 @@ const styles = StyleSheet.create({
 });
 
 export default ListingDetailsScreen;
+
+// Can use this function below, OR use Expo's Push Notification Tool-> https://expo.dev/notifications
+async function sendPushNotification(expoPushToken, title, price) {
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title: 'Item added to cart!',
+    body: `${title} was added to your cart for ${price}`,
+  };
+
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  });
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Constants.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  return token;
+}
